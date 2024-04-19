@@ -14,4 +14,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.microfocus.adm.almoctane.sdk</groupId>
+            <artifactId>sdk-src</artifactId>
+            <version>24.1.5</version>
+        </dependency>
+    </dependencies>
+
 </project>
