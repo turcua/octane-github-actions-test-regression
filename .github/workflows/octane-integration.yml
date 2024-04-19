@@ -30,7 +30,7 @@ jobs:
           octaneClientSecret: ${{secrets.ALM_OCTANE_CLIENT_SECRET}}
           # Automatically provided GitHub token
           githubToken: ${{secrets.GITHUB_TOKEN}}
-          # The url that the CI Server in ALM Octane will point to
+          # The url that the CI Server in ALM Octane will point to (own)
           serverBaseUrl: https://github.com/Stefan923/octane-github-actions-test
           # Pattern for identifying JUnit style report files for test result injection in ALM Octane
           unitTestResultsGlobPattern: "**/*.xml"
