@@ -72115,7 +72115,10 @@ OctaneClient.createPipeline = (rootJobName, ciServer, jobs, parentId) => __await
         root_job_ci_id: rootJobName,
         jobs: pipelineJobs
     })
-        .execute()).data[0];
+        .execute()
+        .catch((reason) => {
+        console.log(`Failed to create pipeline: ${reason}`);
+    })).data[0];
 });
 OctaneClient.getPipeline = (rootJobName_1, ciServer_1, ...args_1) => __awaiter(void 0, [rootJobName_1, ciServer_1, ...args_1], void 0, function* (rootJobName, ciServer, createOnAbsence = false, jobs, parentId) {
     const pipelineQuery = query_1.default.field('name')
