@@ -72043,7 +72043,7 @@ OctaneClient.octane = new alm_octane_js_rest_sdk_1.Octane({
     password: _a.config.octaneClientSecret,
     headers: {
         'ALM-OCTANE-TECH-PREVIEW': true,
-        'ALM-OCTANE-PRIVATE': true
+        'HPECLIENTTYPE': 'OCTANE_MIGRATION'
     }
 });
 OctaneClient.ANALYTICS_CI_INTERNAL_API_URL = `/internal-api/shared_spaces/${_a.config.octaneSharedSpace}/analytics/ci`;
@@ -72112,6 +72112,8 @@ OctaneClient.createPipeline = (rootJobName, ciServer, jobs, parentId) => __await
             type: 'ci_server',
             id: ciServer.id
         },
+        multi_branch_parent: multi_branch_parent,
+        multi_branch_type: multi_branch_type,
         root_job_ci_id: rootJobName,
         jobs: pipelineJobs
     })
