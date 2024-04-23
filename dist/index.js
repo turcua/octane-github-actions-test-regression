@@ -72112,8 +72112,6 @@ OctaneClient.createPipeline = (rootJobName, ciServer, jobs, parentId) => __await
             type: 'ci_server',
             id: ciServer.id
         },
-        multi_branch_parent: multi_branch_parent,
-        multi_branch_type: multi_branch_type,
         root_job_ci_id: rootJobName,
         jobs: pipelineJobs
     })
@@ -72859,10 +72857,10 @@ const getPipelineData = (event, shouldCreatePipelineAndCiServer, jobs) => __awai
     const ciServer = yield octaneClient_1.default.getCIServer(instanceId, projectName, baseUrl, shouldCreatePipelineAndCiServer);
     const pipelineName = (_a = event.workflow) === null || _a === void 0 ? void 0 : _a.name;
     const branchName = (_b = event.workflow_run) === null || _b === void 0 ? void 0 : _b.head_branch;
-    const rootJobName = `${projectName}/${pipelineName}`;
     if (!pipelineName || !branchName) {
         throw new Error('Event should contain workflow data!');
     }
+    const rootJobName = `${projectName}/${pipelineName}`;
     let parentId = undefined;
     console.log('Getting project (parent) pipeline...');
     yield octaneClient_1.default.getPipeline(rootJobName, ciServer, shouldCreatePipelineAndCiServer, jobs).then(pipelineBody => {
