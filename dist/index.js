@@ -72849,7 +72849,7 @@ exports.getPipelineData = void 0;
 const octaneClient_1 = __importDefault(__nccwpck_require__(18607));
 const config_1 = __nccwpck_require__(84561);
 const getPipelineData = (event, shouldCreatePipelineAndCiServer, jobs) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+    var _a, _b, _c;
     const instanceId = `GHA/${(0, config_1.getConfig)().octaneSharedSpace}`;
     console.log('Getting workspace name...');
     const sharedSpaceName = yield octaneClient_1.default.getSharedSpaceName((0, config_1.getConfig)().octaneSharedSpace);
@@ -72858,18 +72858,19 @@ const getPipelineData = (event, shouldCreatePipelineAndCiServer, jobs) => __awai
     console.log('Getting CI Server...');
     const ciServer = yield octaneClient_1.default.getCIServer(instanceId, projectName, baseUrl, shouldCreatePipelineAndCiServer);
     const pipelineName = (_a = event.workflow) === null || _a === void 0 ? void 0 : _a.name;
+    const branchName = (_b = event.workflow_run) === null || _b === void 0 ? void 0 : _b.head_branch;
     const rootJobName = `${projectName}/${pipelineName}`;
-    if (!pipelineName) {
+    if (!pipelineName || !branchName) {
         throw new Error('Event should contain workflow data!');
     }
     let parentId = undefined;
     console.log('Getting project (parent) pipeline...');
-    yield octaneClient_1.default.getPipeline(projectName, ciServer, shouldCreatePipelineAndCiServer, jobs).then(pipelineBody => {
+    yield octaneClient_1.default.getPipeline(rootJobName, ciServer, shouldCreatePipelineAndCiServer, jobs).then(pipelineBody => {
         parentId = pipelineBody.id;
     });
     console.log('Getting branch (child) pipeline...');
-    yield octaneClient_1.default.getPipeline(rootJobName, ciServer, shouldCreatePipelineAndCiServer, jobs, parentId);
-    const buildCiId = (_b = event.workflow_run) === null || _b === void 0 ? void 0 : _b.id.toString();
+    yield octaneClient_1.default.getPipeline(`${rootJobName}/${branchName}`, ciServer, shouldCreatePipelineAndCiServer, jobs, parentId);
+    const buildCiId = (_c = event.workflow_run) === null || _c === void 0 ? void 0 : _c.id.toString();
     if (!buildCiId) {
         throw new Error('Event should contain workflow run data!');
     }
