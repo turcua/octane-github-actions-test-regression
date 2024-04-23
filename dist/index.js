@@ -72103,6 +72103,7 @@ OctaneClient.createPipeline = (rootJobName, ciServer, jobs, parentId) => __await
         };
         multi_branch_type = "CHILD";
     }
+    console.log(`Creating pipeline...`);
     return (yield _a.octane
         .create('pipelines', {
         name: rootJobName,
@@ -72110,6 +72111,8 @@ OctaneClient.createPipeline = (rootJobName, ciServer, jobs, parentId) => __await
             type: 'ci_server',
             id: ciServer.id
         },
+        multi_branch_parent: multi_branch_parent,
+        multi_branch_type: multi_branch_type,
         root_job_ci_id: rootJobName,
         jobs: pipelineJobs
     })
