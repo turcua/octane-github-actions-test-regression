@@ -72415,14 +72415,15 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                         }
                     }
                 });
-                const rootQueuedEvent = (0, ciEventsService_1.generateRootCiEvent)(event, pipelineData, "started" /* CiEventType.STARTED */);
+                const parentCiId = yield (0, pipelineDataService_1.getPipelineName)(event, true);
+                const rootQueuedEvent = (0, ciEventsService_1.generateRootCiEvent)(event, pipelineData, "started" /* CiEventType.STARTED */, undefined, "CHILD" /* MultiBranchType.CHILD */, parentCiId);
                 const rootEventsToSend = [rootQueuedEvent];
                 const octaneBuilds = (yield octaneClient_1.default.getJobBuilds(pipelineData.rootJobName)).sort((build1, build2) => build2.start_time - build1.start_time);
                 if (octaneBuilds.length > 0) {
                     const since = new Date(octaneBuilds[0].start_time);
                     const scmData = yield (0, scmDataService_1.collectSCMData)(event, owner, repoName, since);
                     if (scmData) {
-                        const rootSCMEvent = (0, ciEventsService_1.generateRootCiEvent)(event, pipelineData, "scm" /* CiEventType.SCM */, scmData);
+                        const rootSCMEvent = (0, ciEventsService_1.generateRootCiEvent)(event, pipelineData, "scm" /* CiEventType.SCM */, scmData, "CHILD" /* MultiBranchType.CHILD */, parentCiId);
                         rootEventsToSend.push(rootSCMEvent);
                         console.log(`Injecting commits since ${since}...`);
                     }
