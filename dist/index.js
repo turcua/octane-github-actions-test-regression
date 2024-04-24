@@ -72086,6 +72086,7 @@ OctaneClient.createPipeline = (rootJobName, ciServer, isParent, jobs) => __await
     const pipelineJobs = jobs === null || jobs === void 0 ? void 0 : jobs.map(job => {
         const jobName = job.name;
         const jobFullName = `${rootJobName}/${jobName}`;
+        console.log(`${jobFullName}`);
         return {
             name: jobName,
             jobCiId: jobFullName
