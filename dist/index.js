@@ -72587,6 +72587,7 @@ const pollForJobsOfTypeToFinish = (owner, repoName, currentRun, workflowRunId, s
         const notFinishedRuns = yield getNotFinishedRuns(owner, repoName, startTime, currentRun);
         // Integration job name structure is: OctaneIntegration#${{github.event.action}}#${{github.event.workflow_run.id}}
         const runsToWaitFor = notFinishedRuns.filter((run) => __awaiter(void 0, void 0, void 0, function* () {
+            console.log(`${run.id}/${run.workflow_id}, ${currentRun.workflow_id}`);
             const jobs = (yield githubClient_1.default.getWorkflowRunJobs(owner, repoName, run.id)).filter(job => {
                 const nameComponents = job.name.split('#');
                 const runEventType = nameComponents[1];
