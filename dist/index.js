@@ -72345,6 +72345,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                         done = allStepsFinished;
                         const job = yield githubClient_1.default.getJob(owner, repoName, jobId);
                         const parentCiId = yield (0, pipelineDataService_1.getPipelineName)(event, true);
+                        console.log(`${parentCiId}`);
                         let ciJobEvent = (0, ciEventsService_1.mapPipelineComponentToCiEvent)(job, rootParentCauseData, pipelineData.buildCiId, allStepsFinished, runNumber, "CHILD" /* MultiBranchType.CHILD */, parentCiId);
                         if (!alreadySentStartedEvent ||
                             ciJobEvent.eventType == "finished" /* CiEventType.FINISHED */) {
