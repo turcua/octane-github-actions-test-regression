@@ -72434,7 +72434,8 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
             else if (eventType == "completed" /* ActionsEventType.WORKFLOW_FINISHED */) {
                 console.log('Waiting for queued events to finish up...');
                 yield (0, ciEventsService_1.pollForJobsOfTypeToFinish)(owner, repoName, currentRun, workflowRunId, startTime, "in_progress" /* ActionsEventType.WORKFLOW_STARTED */);
-                const completedEvent = (0, ciEventsService_1.generateRootCiEvent)(event, pipelineData, "finished" /* CiEventType.FINISHED */);
+                const parentCiId = yield (0, pipelineDataService_1.getPipelineName)(event, true);
+                const completedEvent = (0, ciEventsService_1.generateRootCiEvent)(event, pipelineData, "finished" /* CiEventType.FINISHED */, undefined, "CHILD" /* MultiBranchType.CHILD */, parentCiId);
                 yield octaneClient_1.default.sendEvents([completedEvent], pipelineData.instanceId, pipelineData.baseUrl);
                 if ((0, config_1.getConfig)().unitTestResultsGlobPattern) {
                     yield (0, testResultsService_1.sendJUnitTestResults)(owner, repoName, workflowRunId, pipelineData.buildCiId, pipelineData.rootJobName, pipelineData.instanceId);
@@ -72617,7 +72618,7 @@ const getNotFinishedRuns = (owner, repoName, startTime, currentRun) => __awaiter
     runs.push(...(yield githubClient_1.default.getWorkflowRunsTriggeredBeforeByStatus(...params, "waiting" /* WorkflowRunStatus.WAITING */)));
     return runs.filter(run => run.id !== currentRun.id);
 });
-const generateRootCiEvent = (event, pipelineData, eventType, scmData) => {
+const generateRootCiEvent = (event, pipelineData, eventType, scmData, multiBranchType, parentCiId) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j;
     const rootEvent = {
         buildCiId: pipelineData.buildCiId,
@@ -72634,7 +72635,9 @@ const generateRootCiEvent = (event, pipelineData, eventType, scmData) => {
             causeType: (_d = event.workflow_run) === null || _d === void 0 ? void 0 : _d.event,
             userId: (_e = event.workflow_run) === null || _e === void 0 ? void 0 : _e.triggering_actor.login,
             userName: (_f = event.workflow_run) === null || _f === void 0 ? void 0 : _f.triggering_actor.login
-        }, pipelineData.buildCiId)
+        }, pipelineData.buildCiId),
+        multiBranchType: multiBranchType,
+        parentCiId: parentCiId
     };
     if ("finished" /* CiEventType.FINISHED */ === eventType) {
         rootEvent.duration = getRunDuration((_g = event.workflow_run) === null || _g === void 0 ? void 0 : _g.run_started_at, (_h = event.workflow_run) === null || _h === void 0 ? void 0 : _h.updated_at);
