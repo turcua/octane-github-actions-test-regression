@@ -72679,6 +72679,8 @@ const getEventType = (event) => {
     switch (event.action) {
         case 'requested':
             return "requested" /* ActionsEventType.WORKFLOW_QUEUED */;
+        case 'in_progress':
+            return "in_progress" /* ActionsEventType.WORKFLOW_STARTED */;
         case 'completed':
             return "completed" /* ActionsEventType.WORKFLOW_FINISHED */;
         case 'opened':
