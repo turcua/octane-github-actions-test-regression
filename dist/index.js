@@ -72325,9 +72325,9 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
             console.log('Getting pipeline data...');
             // Get or create the parent pipeline if workflow is queued,
             // otherwise get the child (branch-specific) pipeline
-            const pipelineData = yield (0, pipelineDataService_1.getPipelineData)(event, isWorkflowQueued, isWorkflowQueued, jobs);
+            let pipelineData = yield (0, pipelineDataService_1.getPipelineData)(event, isWorkflowQueued, isWorkflowQueued, jobs);
             if (isWorkflowQueued) {
-                yield (0, pipelineDataService_1.getPipelineData)(event, isWorkflowQueued, false, jobs);
+                pipelineData = yield (0, pipelineDataService_1.getPipelineData)(event, isWorkflowQueued, false, jobs);
             }
             const rootParentCauseData = {
                 isRoot: true,
