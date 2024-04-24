@@ -72326,9 +72326,9 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
             console.log('Getting pipeline data...');
             // Get or create the parent pipeline if workflow is queued,
             // otherwise get the child (branch-specific) pipeline
-            let pipelineData = yield (0, pipelineDataService_1.getPipelineData)(event, isWorkflowQueued, isWorkflowQueued, jobs);
+            const pipelineData = yield (0, pipelineDataService_1.getPipelineData)(event, isWorkflowQueued, isWorkflowQueued, jobs);
             if (isWorkflowQueued) {
-                pipelineData = yield (0, pipelineDataService_1.getPipelineData)(event, isWorkflowQueued, false, jobs);
+                yield (0, pipelineDataService_1.getPipelineData)(event, isWorkflowQueued, false, jobs);
             }
             const rootParentCauseData = {
                 isRoot: true,
@@ -72430,9 +72430,9 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                 console.log('Polling for job updates...');
                 yield pollForJobUpdates(3000, 2);
             }
-            else {
+            else if (eventType == "completed" /* ActionsEventType.WORKFLOW_FINISHED */) {
                 console.log('Waiting for queued events to finish up...');
-                yield (0, ciEventsService_1.pollForJobsOfTypeToFinish)(owner, repoName, currentRun, workflowRunId, startTime, "requested" /* ActionsEventType.WORKFLOW_QUEUED */);
+                yield (0, ciEventsService_1.pollForJobsOfTypeToFinish)(owner, repoName, currentRun, workflowRunId, startTime, "in_progress" /* ActionsEventType.WORKFLOW_STARTED */);
                 const completedEvent = (0, ciEventsService_1.generateRootCiEvent)(event, pipelineData, "finished" /* CiEventType.FINISHED */);
                 yield octaneClient_1.default.sendEvents([completedEvent], pipelineData.instanceId, pipelineData.baseUrl);
                 if ((0, config_1.getConfig)().unitTestResultsGlobPattern) {
@@ -72588,12 +72588,10 @@ const pollForJobsOfTypeToFinish = (owner, repoName, currentRun, workflowRunId, s
         const notFinishedRuns = yield getNotFinishedRuns(owner, repoName, startTime, currentRun);
         // Integration job name structure is: OctaneIntegration#${{github.event.action}}#${{github.event.workflow_run.id}}
         const runsToWaitFor = notFinishedRuns.filter((run) => __awaiter(void 0, void 0, void 0, function* () {
-            console.log(`${run.id}/${run.workflow_id}, ${currentRun.workflow_id}`);
             const jobs = (yield githubClient_1.default.getWorkflowRunJobs(owner, repoName, run.id)).filter(job => {
                 const nameComponents = job.name.split('#');
                 const runEventType = nameComponents[1];
                 const triggeredByRunId = nameComponents[2];
-                console.log(`${runEventType}/${eventType} - ${triggeredByRunId}/${workflowRunId}`);
                 return (runEventType === eventType &&
                     Number.parseInt(triggeredByRunId) === workflowRunId);
             });
