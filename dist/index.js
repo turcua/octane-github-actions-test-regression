@@ -72361,7 +72361,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                                 isRoot: false,
                                 jobName: `${rootParentCauseData.jobName}/${job.name}`,
                                 parentJobData: rootParentCauseData
-                            }, pipelineData.buildCiId, true, runNumber);
+                            }, pipelineData.buildCiId, true, runNumber, "CHILD" /* MultiBranchType.CHILD */, parentCiId);
                             if (!stepsStarted.has(step.number) &&
                                 stepCiEvent.eventType == "finished" /* CiEventType.FINISHED */) {
                                 yield octaneClient_1.default.sendEvents([Object.assign(Object.assign({}, stepCiEvent), { eventType: "started" /* CiEventType.STARTED */ })], pipelineData.instanceId, pipelineData.baseUrl);
