@@ -72431,7 +72431,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
             }
             else {
                 console.log('Waiting for queued events to finish up...');
-                yield (0, ciEventsService_1.pollForJobsOfTypeToFinish)(owner, repoName, currentRun, workflowRunId, startTime, "completed" /* ActionsEventType.WORKFLOW_FINISHED */);
+                yield (0, ciEventsService_1.pollForJobsOfTypeToFinish)(owner, repoName, currentRun, workflowRunId, startTime, "requested" /* ActionsEventType.WORKFLOW_QUEUED */, "in_progress" /* ActionsEventType.WORKFLOW_STARTED */);
                 const completedEvent = (0, ciEventsService_1.generateRootCiEvent)(event, pipelineData, "finished" /* CiEventType.FINISHED */);
                 yield octaneClient_1.default.sendEvents([completedEvent], pipelineData.instanceId, pipelineData.baseUrl);
                 if ((0, config_1.getConfig)().unitTestResultsGlobPattern) {
@@ -72581,7 +72581,7 @@ exports.pollForJobsOfTypeToFinish = exports.getEventType = exports.mapPipelineCo
 const githubClient_1 = __importDefault(__nccwpck_require__(7415));
 const utils_1 = __nccwpck_require__(80239);
 const eventCauseBuilder_1 = __nccwpck_require__(54007);
-const pollForJobsOfTypeToFinish = (owner, repoName, currentRun, workflowRunId, startTime, eventType) => __awaiter(void 0, void 0, void 0, function* () {
+const pollForJobsOfTypeToFinish = (owner, repoName, currentRun, workflowRunId, startTime, eventType, eventTypeOr) => __awaiter(void 0, void 0, void 0, function* () {
     let done = false;
     while (!done) {
         const notFinishedRuns = yield getNotFinishedRuns(owner, repoName, startTime, currentRun);
@@ -72592,7 +72592,7 @@ const pollForJobsOfTypeToFinish = (owner, repoName, currentRun, workflowRunId, s
                 const runEventType = nameComponents[1];
                 const triggeredByRunId = nameComponents[2];
                 console.log(`${runEventType}/${eventType} - ${triggeredByRunId}/${workflowRunId}`);
-                return (runEventType === eventType &&
+                return ((runEventType === eventType || runEventType == eventTypeOr) &&
                     Number.parseInt(triggeredByRunId) === workflowRunId);
             });
             return jobs.length > 0;
