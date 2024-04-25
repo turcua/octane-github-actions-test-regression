@@ -72344,13 +72344,11 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                         done = allStepsFinished;
                         const job = yield githubClient_1.default.getJob(owner, repoName, jobId);
                         const parentCiId = yield (0, pipelineDataService_1.getPipelineName)(event, true);
-                        console.log(`${parentCiId}`);
+                        console.log(`CiEvent: ParentCiId=${parentCiId}, BuildCiId=${pipelineData.buildCiId}`);
                         let ciJobEvent = (0, ciEventsService_1.mapPipelineComponentToCiEvent)(job, rootParentCauseData, pipelineData.buildCiId, allStepsFinished, runNumber, "CHILD" /* MultiBranchType.CHILD */, parentCiId);
                         if (!alreadySentStartedEvent ||
                             ciJobEvent.eventType == "finished" /* CiEventType.FINISHED */) {
-                            yield octaneClient_1.default.sendEvents([ciJobEvent], pipelineData.instanceId, pipelineData.baseUrl).catch((reason) => {
-                                console.log(`sendEvents failed : ${reason}`);
-                            });
+                            yield octaneClient_1.default.sendEvents([ciJobEvent], pipelineData.instanceId, pipelineData.baseUrl);
                             alreadySentStartedEvent = true;
                         }
                         const steps = ((_j = job.steps) === null || _j === void 0 ? void 0 : _j.sort((step1, step2) => step1.number - step2.number)) ||
