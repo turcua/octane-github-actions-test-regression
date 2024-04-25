@@ -72105,7 +72105,6 @@ OctaneClient.createPipeline = (rootJobName, ciServer, isParent, jobs) => __await
             type: 'ci_server',
             id: ciServer.id
         },
-        multi_branch_type: multi_branch_type,
         root_job_ci_id: rootJobName,
         jobs: pipelineJobs
     })
