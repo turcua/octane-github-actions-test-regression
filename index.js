@@ -72344,7 +72344,8 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                     multiBranchType: "CHILD" /* MultiBranchType.CHILD */,
                     parentCiId: pipelineData.rootJobName,
                     skipValidation: true,
-                    branch: branchName
+                    branch: branchName,
+                    number: pipelineData.buildCiId
                 };
                 yield octaneClient_1.default.sendEvents([ciJobEvent], pipelineData.instanceId, pipelineData.baseUrl).catch((reason) => {
                     console.log(`sendEvents failed : ${reason}`);
