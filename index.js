@@ -72330,7 +72330,6 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                 userName: (_g = event.workflow_run) === null || _g === void 0 ? void 0 : _g.triggering_actor.login
             };
             if (eventType === "requested" /* ActionsEventType.WORKFLOW_QUEUED */) {
-                const rootJobName = yield (0, pipelineDataService_1.getPipelineName)(event, true);
                 const branchName = (_h = event.workflow_run) === null || _h === void 0 ? void 0 : _h.head_branch;
                 if (!branchName) {
                     throw new Error('Event should contain workflow data!');
@@ -72338,13 +72337,14 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                 console.log(`${pipelineData.rootJobName}/${branchName} and display name: ${branchName}`);
                 let ciJobEvent = {
                     buildCiId: pipelineData.buildCiId,
-                    project: `${rootJobName}/${branchName}`,
+                    project: `${pipelineData.rootJobName}/${branchName}`,
                     projectDisplayName: branchName,
                     eventType: "queued" /* CiEventType.QUEUED */,
                     startTime: startTime,
                     multiBranchType: "CHILD" /* MultiBranchType.CHILD */,
                     parentCiId: pipelineData.rootJobName,
-                    skipValidation: true
+                    skipValidation: true,
+                    branch: branchName
                 };
                 yield octaneClient_1.default.sendEvents([ciJobEvent], pipelineData.instanceId, pipelineData.baseUrl).catch((reason) => {
                     console.log(`sendEvents failed : ${reason}`);
