@@ -72300,7 +72300,7 @@ const scmDataService_1 = __nccwpck_require__(39266);
 const testResultsService_1 = __nccwpck_require__(29058);
 const utils_1 = __nccwpck_require__(80239);
 const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
     const startTime = new Date().getTime();
     const eventType = (0, ciEventsService_1.getEventType)(event);
     const owner = (_a = event.repository) === null || _a === void 0 ? void 0 : _a.owner.login;
@@ -72321,8 +72321,6 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
             const isWorkflowQueued = eventType == "requested" /* ActionsEventType.WORKFLOW_QUEUED */;
             const jobs = yield githubClient_1.default.getWorkflowRunJobs(owner, repoName, workflowRunId);
             console.log('Getting pipeline data...');
-            // Get or create the parent pipeline if workflow is queued,
-            // otherwise get the child (branch-specific) pipeline
             const pipelineData = yield (0, pipelineDataService_1.getPipelineData)(event, isWorkflowQueued, isWorkflowQueued, jobs);
             const rootParentCauseData = {
                 isRoot: true,
@@ -72331,28 +72329,26 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                 userId: (_f = event.workflow_run) === null || _f === void 0 ? void 0 : _f.triggering_actor.login,
                 userName: (_g = event.workflow_run) === null || _g === void 0 ? void 0 : _g.triggering_actor.login
             };
-            // if (eventType === ActionsEventType.WORKFLOW_QUEUED) {
-            //   const job = await GitHubClient.getJob(owner, repoName, jobId);
-            //   let ciJobEvent = mapPipelineComponentToCiEvent(
-            //     job,
-            //     rootParentCauseData,
-            //     pipelineData.buildCiId,
-            //     allStepsFinished,
-            //     runNumber,
-            //     MultiBranchType.CHILD,
-            //     parentCiId
-            //   );
-            //   await OctaneClient.sendEvents(
-            //     [ciJobEvent],
-            //     pipelineData.instanceId,
-            //     pipelineData.baseUrl
-            //   ).catch((reason) => {
-            //     console.log(`sendEvents failed : ${reason}`);
-            //   });
-            // } else
-            if (eventType === "in_progress" /* ActionsEventType.WORKFLOW_STARTED */) {
+            if (eventType === "requested" /* ActionsEventType.WORKFLOW_QUEUED */) {
+                const rootJobName = yield (0, pipelineDataService_1.getPipelineName)(event, false);
+                const branchName = (_h = event.workflow_run) === null || _h === void 0 ? void 0 : _h.head_branch;
+                if (!branchName) {
+                    throw new Error('Event should contain workflow data!');
+                }
+                let ciJobEvent = {
+                    buildCiId: pipelineData.buildCiId,
+                    project: rootJobName,
+                    projectDisplayName: branchName,
+                    eventType: "queued" /* CiEventType.QUEUED */,
+                    startTime: startTime
+                };
+                yield octaneClient_1.default.sendEvents([ciJobEvent], pipelineData.instanceId, pipelineData.baseUrl).catch((reason) => {
+                    console.log(`sendEvents failed : ${reason}`);
+                });
+            }
+            else if (eventType === "in_progress" /* ActionsEventType.WORKFLOW_STARTED */) {
                 const pollForJobStepUpdates = (jobId, interval) => __awaiter(void 0, void 0, void 0, function* () {
-                    var _j;
+                    var _k;
                     let done = false;
                     let alreadySentStartedEvent = false;
                     let allStepsFinished = false;
@@ -72367,7 +72363,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                             yield octaneClient_1.default.sendEvents([ciJobEvent], pipelineData.instanceId, pipelineData.baseUrl);
                             alreadySentStartedEvent = true;
                         }
-                        const steps = ((_j = job.steps) === null || _j === void 0 ? void 0 : _j.sort((step1, step2) => step1.number - step2.number)) ||
+                        const steps = ((_k = job.steps) === null || _k === void 0 ? void 0 : _k.sort((step1, step2) => step1.number - step2.number)) ||
                             [];
                         allStepsFinished =
                             steps &&
@@ -72459,7 +72455,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
         case "edited" /* ActionsEventType.PULL_REQUEST_EDITED */:
         case "reopened" /* ActionsEventType.PULL_REQUEST_REOPENED */:
             console.log(`Received pull request event...`);
-            if (!event.pull_request || !((_h = event.repository) === null || _h === void 0 ? void 0 : _h.html_url)) {
+            if (!event.pull_request || !((_j = event.repository) === null || _j === void 0 ? void 0 : _j.html_url)) {
                 throw new Error('Pull request data and repository url should be present!');
             }
             const gitHubPullRequest = event.pull_request;
@@ -72667,6 +72663,7 @@ exports.generateRootCiEvent = generateRootCiEvent;
 const mapPipelineComponentToCiEvent = (pipelineComponent, parentComponentData, buildCiId, allChildrenFinished, runNumber, multiBranchType, parentCiId) => {
     const componentName = pipelineComponent.name;
     const componentFullName = `${parentComponentData.jobName}/${componentName}`;
+    console.log(`${componentName} and full name: ${componentFullName}`);
     const ciEvent = {
         buildCiId,
         eventType: allChildrenFinished && pipelineComponent.conclusion
