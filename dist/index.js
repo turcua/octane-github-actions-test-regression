@@ -72343,7 +72343,8 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                     eventType: "queued" /* CiEventType.QUEUED */,
                     startTime: startTime,
                     multiBranchType: "CHILD" /* MultiBranchType.CHILD */,
-                    parentCiId: pipelineData.buildCiId
+                    parentCiId: pipelineData.buildCiId,
+                    skipValidation: true
                 };
                 yield octaneClient_1.default.sendEvents([ciJobEvent], pipelineData.instanceId, pipelineData.baseUrl).catch((reason) => {
                     console.log(`sendEvents failed : ${reason}`);
