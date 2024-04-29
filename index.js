@@ -72321,8 +72321,8 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
             const isWorkflowQueued = eventType == "requested" /* ActionsEventType.WORKFLOW_QUEUED */;
             const jobs = yield githubClient_1.default.getWorkflowRunJobs(owner, repoName, workflowRunId);
             console.log('Getting pipeline data...');
-            let pipelineData = yield (0, pipelineDataService_1.getPipelineData)(event, isWorkflowQueued, isWorkflowQueued || eventType === "in_progress" /* ActionsEventType.WORKFLOW_STARTED */, jobs);
-            if (eventType === "in_progress" /* ActionsEventType.WORKFLOW_STARTED */) {
+            let pipelineData = yield (0, pipelineDataService_1.getPipelineData)(event, isWorkflowQueued, isWorkflowQueued || eventType == "in_progress" /* ActionsEventType.WORKFLOW_STARTED */, jobs);
+            if (eventType == "in_progress" /* ActionsEventType.WORKFLOW_STARTED */) {
                 const branchName = (_e = event.workflow_run) === null || _e === void 0 ? void 0 : _e.head_branch;
                 if (!branchName) {
                     throw new Error('Event should contain workflow data!');
@@ -72353,7 +72353,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                 userId: (_g = event.workflow_run) === null || _g === void 0 ? void 0 : _g.triggering_actor.login,
                 userName: (_h = event.workflow_run) === null || _h === void 0 ? void 0 : _h.triggering_actor.login
             };
-            if (eventType === "in_progress" /* ActionsEventType.WORKFLOW_STARTED */) {
+            if (eventType == "in_progress" /* ActionsEventType.WORKFLOW_STARTED */) {
                 const pollForJobStepUpdates = (jobId, interval) => __awaiter(void 0, void 0, void 0, function* () {
                     var _k;
                     let done = false;
