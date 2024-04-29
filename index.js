@@ -72332,7 +72332,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                     buildCiId: pipelineData.buildCiId,
                     project: `${pipelineData.rootJobName}`,
                     projectDisplayName: branchName,
-                    eventType: "queued" /* CiEventType.QUEUED */,
+                    eventType: "started" /* CiEventType.STARTED */,
                     startTime: startTime,
                     multiBranchType: "CHILD" /* MultiBranchType.CHILD */,
                     parentCiId: pipelineData.rootJobName,
