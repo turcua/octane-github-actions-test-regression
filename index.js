@@ -72340,6 +72340,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                     branch: branchName,
                     number: pipelineData.buildCiId
                 };
+                console.log(JSON.stringify(ciJobEvent));
                 yield octaneClient_1.default.sendEvents([ciJobEvent], pipelineData.instanceId, pipelineData.baseUrl).catch((reason) => {
                     console.log(`sendEvents failed : ${reason}`);
                 });
