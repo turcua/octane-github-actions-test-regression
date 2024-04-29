@@ -26,9 +26,9 @@ jobs:
         # Config parameters for the integration
         with:
           # ALM Octane connection data
-          octaneUrl: 127.0.0.1:8080/dev
-          octaneSharedSpace: 1001
-          octaneWorkspace: 2001
+          octaneUrl: 'https://pmo7.almoctane.com/'
+          octaneSharedSpace: 1002
+          octaneWorkspace: 2004
           octaneClientId: ${{secrets.ALM_OCTANE_CLIENT_ID}}
           octaneClientSecret: ${{secrets.ALM_OCTANE_CLIENT_SECRET}}
           # Automatically provided GitHub token
