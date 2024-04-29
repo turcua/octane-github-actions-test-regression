@@ -27,8 +27,8 @@ jobs:
         with:
           # ALM Octane connection data
           octaneUrl: 'https://d711033d43e96b.lhr.life/dev'
-          octaneSharedSpace: 1002
-          octaneWorkspace: 2004
+          octaneSharedSpace: 1001
+          octaneWorkspace: 2001
           octaneClientId: ${{secrets.ALM_OCTANE_CLIENT_ID}}
           octaneClientSecret: ${{secrets.ALM_OCTANE_CLIENT_SECRET}}
           # Automatically provided GitHub token
