@@ -26,7 +26,7 @@ jobs:
         # Config parameters for the integration
         with:
           # ALM Octane connection data
-          octaneUrl: 'https://pmo7.almoctane.com/'
+          octaneUrl: 'https://d711033d43e96b.lhr.life/dev'
           octaneSharedSpace: 1002
           octaneWorkspace: 2004
           octaneClientId: ${{secrets.ALM_OCTANE_CLIENT_ID}}
