@@ -72311,6 +72311,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
         throw new Error('Event should contain repository data!');
     }
     const currentRun = yield githubClient_1.default.getWorkflowRun(owner, repoName, github_1.context.runId);
+    console.log(`Test`);
     switch (eventType) {
         case "requested" /* ActionsEventType.WORKFLOW_QUEUED */:
         case "in_progress" /* ActionsEventType.WORKFLOW_STARTED */:
