@@ -72337,7 +72337,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                 console.log(`${pipelineData.rootJobName}/${branchName} and display name: ${branchName}`);
                 let ciJobEvent = {
                     buildCiId: pipelineData.buildCiId,
-                    project: `${pipelineData.rootJobName}/${branchName}`,
+                    project: `${pipelineData.rootJobName}`,
                     projectDisplayName: branchName,
                     eventType: "queued" /* CiEventType.QUEUED */,
                     startTime: startTime,
