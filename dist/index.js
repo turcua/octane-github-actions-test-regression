@@ -72083,7 +72083,7 @@ OctaneClient.createCISever = (name, instanceId, url) => __awaiter(void 0, void 0
 });
 OctaneClient.createPipeline = (rootJobName, ciServer, isParent, jobs) => __awaiter(void 0, void 0, void 0, function* () {
     const pipelineJobs = jobs === null || jobs === void 0 ? void 0 : jobs.map(job => {
-        const jobName = job.name;
+        const jobName = "";
         const jobFullName = `${rootJobName}/${jobName}`;
         console.log(`Creating pipeline: ${jobFullName}...`);
         return {
