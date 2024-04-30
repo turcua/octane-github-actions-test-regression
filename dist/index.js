@@ -72083,7 +72083,7 @@ OctaneClient.createCISever = (name, instanceId, url) => __awaiter(void 0, void 0
 });
 OctaneClient.createPipeline = (rootJobName, ciServer, isParent, jobs) => __awaiter(void 0, void 0, void 0, function* () {
     const pipelineJobs = jobs === null || jobs === void 0 ? void 0 : jobs.map(job => {
-        const jobName = "";
+        const jobName = job.name;
         const jobFullName = `${rootJobName}/${jobName}`;
         console.log(`Creating pipeline: ${jobFullName}...`);
         return {
@@ -72343,7 +72343,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
             }
             const rootParentCauseData = {
                 isRoot: true,
-                jobName: pipelineData.rootJobName,
+                jobName: pipelineData.rootJobName.replace("/build", ""),
                 causeType: (_f = event.workflow_run) === null || _f === void 0 ? void 0 : _f.event,
                 userId: (_g = event.workflow_run) === null || _g === void 0 ? void 0 : _g.triggering_actor.login,
                 userName: (_h = event.workflow_run) === null || _h === void 0 ? void 0 : _h.triggering_actor.login
