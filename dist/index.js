@@ -72361,7 +72361,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                     while (!done) {
                         done = allStepsFinished;
                         const job = yield githubClient_1.default.getJob(owner, repoName, jobId);
-                        let ciJobEvent = (0, ciEventsService_1.mapPipelineComponentToCiEvent)(job, rootParentCauseData, pipelineData.buildCiId, allStepsFinished, runNumber);
+                        let ciJobEvent = (0, ciEventsService_1.mapPipelineComponentToCiEvent)(job, rootParentCauseData, pipelineData.buildCiId, allStepsFinished, runNumber, "CHILD" /* MultiBranchType.CHILD */, pipelineData.rootJobName);
                         if (!alreadySentStartedEvent ||
                             ciJobEvent.eventType == "finished" /* CiEventType.FINISHED */) {
                             yield octaneClient_1.default.sendEvents([ciJobEvent], pipelineData.instanceId, pipelineData.baseUrl);
@@ -72377,7 +72377,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                                 isRoot: false,
                                 jobName: `${rootParentCauseData.jobName}/${job.name}`,
                                 parentJobData: rootParentCauseData
-                            }, pipelineData.buildCiId, true, runNumber);
+                            }, pipelineData.buildCiId, true, runNumber, "CHILD" /* MultiBranchType.CHILD */, pipelineData.rootJobName);
                             if (!stepsStarted.has(step.number) &&
                                 stepCiEvent.eventType == "finished" /* CiEventType.FINISHED */) {
                                 yield octaneClient_1.default.sendEvents([Object.assign(Object.assign({}, stepCiEvent), { eventType: "started" /* CiEventType.STARTED */ })], pipelineData.instanceId, pipelineData.baseUrl);
