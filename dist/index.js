@@ -72086,7 +72086,7 @@ OctaneClient.createPipeline = (rootJobName, ciServer, isParent, jobs) => __await
     const pipelineJobs = jobs === null || jobs === void 0 ? void 0 : jobs.map(job => {
         const jobName = job.name;
         const jobFullName = `${rootJobName}/${jobName}`;
-        console.log(`Created pipeline: ${jobFullName}`);
+        console.log(`Creating pipeline: ${jobFullName}...`);
         return {
             name: jobName,
             jobCiId: jobFullName
@@ -72891,7 +72891,7 @@ const getPipelineData = (event, shouldCreatePipelineAndCiServer, isParent, jobs)
     console.log('Getting CI Server...');
     const ciServer = yield octaneClient_1.default.getCIServer(instanceId, projectName, baseUrl, shouldCreatePipelineAndCiServer);
     const rootJobName = yield getPipelineName(event, isParent);
-    console.log(`Getting pipeline '${rootJobName}'...`);
+    console.log(`Getting pipeline: '${rootJobName}'...`);
     yield octaneClient_1.default.getPipeline(rootJobName, ciServer, shouldCreatePipelineAndCiServer, isParent, jobs);
     const buildCiId = (_c = event.workflow_run) === null || _c === void 0 ? void 0 : _c.id.toString();
     if (!buildCiId) {
