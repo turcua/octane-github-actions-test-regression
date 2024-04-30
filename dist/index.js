@@ -72042,8 +72042,7 @@ OctaneClient.octane = new alm_octane_js_rest_sdk_1.Octane({
     user: _a.config.octaneClientId,
     password: _a.config.octaneClientSecret,
     headers: {
-        'ALM-OCTANE-TECH-PREVIEW': true,
-        'HPECLIENTTYPE': 'OCTANE_MIGRATION'
+        'ALM-OCTANE-TECH-PREVIEW': true
     }
 });
 OctaneClient.ANALYTICS_CI_INTERNAL_API_URL = `/internal-api/shared_spaces/${_a.config.octaneSharedSpace}/analytics/ci`;
@@ -72338,11 +72337,11 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                     multiBranchType: "CHILD" /* MultiBranchType.CHILD */,
                     parentCiId: pipelineData.rootJobName,
                     branch: branchName,
-                    number: pipelineData.buildCiId,
+                    number: (runNumber === null || runNumber === void 0 ? void 0 : runNumber.toString()) || pipelineData.buildCiId,
                     skipValidation: true
                 };
                 yield octaneClient_1.default.sendEvents([ciJobEvent], pipelineData.instanceId, pipelineData.baseUrl);
-                pipelineData = yield (0, pipelineDataService_1.getPipelineData)(event, false, false, jobs);
+                pipelineData = yield (0, pipelineDataService_1.getPipelineData)(event, true, false, jobs);
             }
             const rootParentCauseData = {
                 isRoot: true,
@@ -72362,7 +72361,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                         done = allStepsFinished;
                         const job = yield githubClient_1.default.getJob(owner, repoName, jobId);
                         console.log(`Parent component name: ${rootParentCauseData.jobName}`);
-                        let ciJobEvent = (0, ciEventsService_1.mapPipelineComponentToCiEvent)(job, rootParentCauseData, pipelineData.buildCiId, allStepsFinished, runNumber, "CHILD" /* MultiBranchType.CHILD */, pipelineData.rootJobName);
+                        let ciJobEvent = (0, ciEventsService_1.mapPipelineComponentToCiEvent)(job, rootParentCauseData, pipelineData.buildCiId, allStepsFinished, runNumber);
                         if (!alreadySentStartedEvent ||
                             ciJobEvent.eventType == "finished" /* CiEventType.FINISHED */) {
                             yield octaneClient_1.default.sendEvents([ciJobEvent], pipelineData.instanceId, pipelineData.baseUrl);
@@ -72378,7 +72377,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                                 isRoot: false,
                                 jobName: `${rootParentCauseData.jobName}/${job.name}`,
                                 parentJobData: rootParentCauseData
-                            }, pipelineData.buildCiId, true, runNumber, "CHILD" /* MultiBranchType.CHILD */, pipelineData.rootJobName);
+                            }, pipelineData.buildCiId, true, runNumber);
                             if (!stepsStarted.has(step.number) &&
                                 stepCiEvent.eventType == "finished" /* CiEventType.FINISHED */) {
                                 yield octaneClient_1.default.sendEvents([Object.assign(Object.assign({}, stepCiEvent), { eventType: "started" /* CiEventType.STARTED */ })], pipelineData.instanceId, pipelineData.baseUrl);
@@ -72631,7 +72630,7 @@ const getNotFinishedRuns = (owner, repoName, startTime, currentRun) => __awaiter
     runs.push(...(yield githubClient_1.default.getWorkflowRunsTriggeredBeforeByStatus(...params, "waiting" /* WorkflowRunStatus.WAITING */)));
     return runs.filter(run => run.id !== currentRun.id);
 });
-const generateRootCiEvent = (event, pipelineData, eventType, scmData, multiBranchType, parentCiId) => {
+const generateRootCiEvent = (event, pipelineData, eventType, scmData) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j;
     const rootEvent = {
         buildCiId: pipelineData.buildCiId,
@@ -72648,9 +72647,7 @@ const generateRootCiEvent = (event, pipelineData, eventType, scmData, multiBranc
             causeType: (_d = event.workflow_run) === null || _d === void 0 ? void 0 : _d.event,
             userId: (_e = event.workflow_run) === null || _e === void 0 ? void 0 : _e.triggering_actor.login,
             userName: (_f = event.workflow_run) === null || _f === void 0 ? void 0 : _f.triggering_actor.login
-        }, pipelineData.buildCiId),
-        multiBranchType: multiBranchType,
-        parentCiId: parentCiId
+        }, pipelineData.buildCiId)
     };
     if ("finished" /* CiEventType.FINISHED */ === eventType) {
         rootEvent.duration = getRunDuration((_g = event.workflow_run) === null || _g === void 0 ? void 0 : _g.run_started_at, (_h = event.workflow_run) === null || _h === void 0 ? void 0 : _h.updated_at);
@@ -72665,7 +72662,7 @@ const generateRootCiEvent = (event, pipelineData, eventType, scmData, multiBranc
     return rootEvent;
 };
 exports.generateRootCiEvent = generateRootCiEvent;
-const mapPipelineComponentToCiEvent = (pipelineComponent, parentComponentData, buildCiId, allChildrenFinished, runNumber, multiBranchType, parentCiId) => {
+const mapPipelineComponentToCiEvent = (pipelineComponent, parentComponentData, buildCiId, allChildrenFinished, runNumber) => {
     const componentName = pipelineComponent.name;
     const componentFullName = `${parentComponentData.jobName}/${componentName}`;
     console.log(`${componentName} and full name: ${componentFullName}`);
@@ -72684,9 +72681,7 @@ const mapPipelineComponentToCiEvent = (pipelineComponent, parentComponentData, b
             isRoot: false,
             jobName: componentFullName,
             parentJobData: parentComponentData
-        }, buildCiId),
-        multiBranchType: multiBranchType,
-        parentCiId: parentCiId
+        }, buildCiId)
     };
     if (ciEvent.eventType == "finished" /* CiEventType.FINISHED */) {
         ciEvent.result = getRunResult(pipelineComponent.conclusion);
