@@ -72319,32 +72319,29 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
             if (!workflowRunId) {
                 throw new Error('Event should contain workflow run id!');
             }
-            const isWorkflowQueued = eventType == "requested" /* ActionsEventType.WORKFLOW_QUEUED */;
-            console.log(`Getting pipeline data... test ${eventType == "in_progress" /* ActionsEventType.WORKFLOW_STARTED */}`);
+            const isWorkflowStarted = eventType == "in_progress" /* ActionsEventType.WORKFLOW_STARTED */;
+            console.log(`Getting pipeline data...`);
             const jobs = yield githubClient_1.default.getWorkflowRunJobs(owner, repoName, workflowRunId);
-            let pipelineData = yield (0, pipelineDataService_1.getPipelineData)(event, isWorkflowQueued, eventType == "in_progress" /* ActionsEventType.WORKFLOW_STARTED */ || isWorkflowQueued, jobs);
-            if (eventType == "in_progress" /* ActionsEventType.WORKFLOW_STARTED */) {
+            let pipelineData = yield (0, pipelineDataService_1.getPipelineData)(event, eventType == "requested" /* ActionsEventType.WORKFLOW_QUEUED */, eventType == "requested" /* ActionsEventType.WORKFLOW_QUEUED */ || isWorkflowStarted, jobs);
+            if (isWorkflowStarted) {
                 const branchName = (_e = event.workflow_run) === null || _e === void 0 ? void 0 : _e.head_branch;
                 if (!branchName) {
                     throw new Error('Event should contain workflow data!');
                 }
-                console.log(`${pipelineData.rootJobName}/${branchName} and display name: ${branchName}`);
+                console.log(`Creating child pipeline: ${pipelineData.rootJobName}/${branchName}`);
                 let ciJobEvent = {
                     buildCiId: pipelineData.buildCiId,
                     project: `${pipelineData.rootJobName}`,
-                    projectDisplayName: branchName,
+                    projectDisplayName: `${pipelineData.rootJobName}/${branchName}`,
                     eventType: "started" /* CiEventType.STARTED */,
                     startTime: startTime,
                     multiBranchType: "CHILD" /* MultiBranchType.CHILD */,
                     parentCiId: pipelineData.rootJobName,
-                    skipValidation: true,
                     branch: branchName,
-                    number: pipelineData.buildCiId
+                    number: pipelineData.buildCiId,
+                    skipValidation: true
                 };
-                console.log(JSON.stringify(ciJobEvent));
-                yield octaneClient_1.default.sendEvents([ciJobEvent], pipelineData.instanceId, pipelineData.baseUrl).catch((reason) => {
-                    console.log(`sendEvents failed : ${reason}`);
-                });
+                yield octaneClient_1.default.sendEvents([ciJobEvent], pipelineData.instanceId, pipelineData.baseUrl);
                 pipelineData = yield (0, pipelineDataService_1.getPipelineData)(event, false, false, jobs);
             }
             const rootParentCauseData = {
@@ -72354,7 +72351,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                 userId: (_g = event.workflow_run) === null || _g === void 0 ? void 0 : _g.triggering_actor.login,
                 userName: (_h = event.workflow_run) === null || _h === void 0 ? void 0 : _h.triggering_actor.login
             };
-            if (eventType == "in_progress" /* ActionsEventType.WORKFLOW_STARTED */) {
+            if (isWorkflowStarted) {
                 const pollForJobStepUpdates = (jobId, interval) => __awaiter(void 0, void 0, void 0, function* () {
                     var _k;
                     let done = false;
