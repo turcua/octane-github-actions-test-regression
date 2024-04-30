@@ -72095,7 +72095,6 @@ OctaneClient.createPipeline = (rootJobName, ciServer, isParent, jobs) => __await
         name: rootJobName,
         jobCiId: rootJobName
     });
-    let multiBranchType = isParent ? "PARENT" : "CHILD";
     console.log(`Creating pipeline...`);
     return (yield _a.octane
         .create('pipelines', {
@@ -72344,7 +72343,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
             }
             const rootParentCauseData = {
                 isRoot: true,
-                jobName: `${pipelineData.rootJobName}/build`,
+                jobName: pipelineData.rootJobName,
                 causeType: (_f = event.workflow_run) === null || _f === void 0 ? void 0 : _f.event,
                 userId: (_g = event.workflow_run) === null || _g === void 0 ? void 0 : _g.triggering_actor.login,
                 userName: (_h = event.workflow_run) === null || _h === void 0 ? void 0 : _h.triggering_actor.login
@@ -72662,11 +72661,8 @@ const generateRootCiEvent = (event, pipelineData, eventType, scmData) => {
 };
 exports.generateRootCiEvent = generateRootCiEvent;
 const mapPipelineComponentToCiEvent = (pipelineComponent, parentComponentData, buildCiId, allChildrenFinished, runNumber) => {
-    let componentName = pipelineComponent.name;
-    if (componentName.startsWith("build/")) {
-        componentName = componentName.substring("build/".length);
-    }
-    const componentFullName = componentName == "build" ? "" : `${parentComponentData.jobName}/${componentName}`;
+    const componentName = pipelineComponent.name;
+    const componentFullName = `${parentComponentData.jobName}/${componentName}`;
     console.log(`${componentName} and full name: ${componentFullName}`);
     const ciEvent = {
         buildCiId,
