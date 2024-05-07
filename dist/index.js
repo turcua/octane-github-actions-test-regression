@@ -72328,7 +72328,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                 console.log(`Creating child pipeline: ${pipelineData.rootJobName}/${branchName}`);
                 let ciJobEvent = {
                     buildCiId: pipelineData.buildCiId,
-                    project: `${pipelineData.rootJobName}`,
+                    project: `${pipelineData.rootJobName}/${branchName}`,
                     projectDisplayName: `${pipelineData.rootJobName}/${branchName}`,
                     eventType: "started" /* CiEventType.STARTED */,
                     startTime: startTime,
