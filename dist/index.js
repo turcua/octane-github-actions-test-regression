@@ -72661,7 +72661,7 @@ const generateRootCiEvent = (event, pipelineData, eventType, scmData) => {
 exports.generateRootCiEvent = generateRootCiEvent;
 const mapPipelineComponentToCiEvent = (pipelineComponent, parentComponentData, buildCiId, allChildrenFinished, runNumber) => {
     const componentName = pipelineComponent.name;
-    const componentFullName = `${parentComponentData.jobName.replace("/build", "")}/${componentName}`;
+    const componentFullName = `${parentComponentData.jobName}/${componentName}`;
     const ciEvent = {
         buildCiId,
         eventType: allChildrenFinished && pipelineComponent.conclusion
