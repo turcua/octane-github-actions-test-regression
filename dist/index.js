@@ -72341,10 +72341,9 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                 yield octaneClient_1.default.sendEvents([ciJobEvent], pipelineData.instanceId, pipelineData.baseUrl);
                 pipelineData = yield (0, pipelineDataService_1.getPipelineData)(event, false, false, jobs);
             }
-            (0, utils_1.sleep)(5000);
             const rootParentCauseData = {
                 isRoot: true,
-                jobName: pipelineData.rootJobName,
+                jobName: pipelineData.rootJobName.replace('/master', ''),
                 causeType: (_f = event.workflow_run) === null || _f === void 0 ? void 0 : _f.event,
                 userId: (_g = event.workflow_run) === null || _g === void 0 ? void 0 : _g.triggering_actor.login,
                 userName: (_h = event.workflow_run) === null || _h === void 0 ? void 0 : _h.triggering_actor.login
