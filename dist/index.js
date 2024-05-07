@@ -72341,6 +72341,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                 yield octaneClient_1.default.sendEvents([ciJobEvent], pipelineData.instanceId, pipelineData.baseUrl);
                 pipelineData = yield (0, pipelineDataService_1.getPipelineData)(event, false, false, jobs);
             }
+            (0, utils_1.sleep)(5000);
             const rootParentCauseData = {
                 isRoot: true,
                 jobName: pipelineData.rootJobName,
