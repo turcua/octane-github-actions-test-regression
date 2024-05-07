@@ -72656,6 +72656,7 @@ const generateRootCiEvent = (event, pipelineData, eventType, scmData) => {
         }
         rootEvent.scmData = scmData;
     }
+    console.log(`Root event: ${JSON.stringify(rootEvent)}`);
     return rootEvent;
 };
 exports.generateRootCiEvent = generateRootCiEvent;
