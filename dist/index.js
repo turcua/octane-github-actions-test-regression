@@ -72645,8 +72645,7 @@ const generateRootCiEvent = (event, pipelineData, eventType, scmData) => {
             causeType: (_d = event.workflow_run) === null || _d === void 0 ? void 0 : _d.event,
             userId: (_e = event.workflow_run) === null || _e === void 0 ? void 0 : _e.triggering_actor.login,
             userName: (_f = event.workflow_run) === null || _f === void 0 ? void 0 : _f.triggering_actor.login
-        }, pipelineData.buildCiId),
-        skipValidation: true
+        }, pipelineData.buildCiId)
     };
     if ("finished" /* CiEventType.FINISHED */ === eventType) {
         rootEvent.duration = getRunDuration((_g = event.workflow_run) === null || _g === void 0 ? void 0 : _g.run_started_at, (_h = event.workflow_run) === null || _h === void 0 ? void 0 : _h.updated_at);
@@ -72666,7 +72665,7 @@ const mapPipelineComponentToCiEvent = (pipelineComponent, parentComponentData, b
     const componentName = pipelineComponent.name;
     const componentFullName = `${parentComponentData.jobName}/${componentName}`;
     const ciEvent = {
-        buildCiId: buildCiId,
+        buildCiId,
         eventType: allChildrenFinished && pipelineComponent.conclusion
             ? "finished" /* CiEventType.FINISHED */
             : "started" /* CiEventType.STARTED */,
@@ -72680,8 +72679,7 @@ const mapPipelineComponentToCiEvent = (pipelineComponent, parentComponentData, b
             isRoot: false,
             jobName: componentFullName,
             parentJobData: parentComponentData
-        }, buildCiId),
-        skipValidation: true
+        }, buildCiId)
     };
     if (ciEvent.eventType == "finished" /* CiEventType.FINISHED */) {
         ciEvent.result = getRunResult(pipelineComponent.conclusion);
