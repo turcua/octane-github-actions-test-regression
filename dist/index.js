@@ -72308,7 +72308,6 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
         throw new Error('Event should contain repository data!');
     }
     const currentRun = yield githubClient_1.default.getWorkflowRun(owner, repoName, github_1.context.runId);
-    console.log(`Test`);
     switch (eventType) {
         case "requested" /* ActionsEventType.WORKFLOW_QUEUED */:
         case "in_progress" /* ActionsEventType.WORKFLOW_STARTED */:
@@ -72662,9 +72661,7 @@ const generateRootCiEvent = (event, pipelineData, eventType, scmData) => {
 exports.generateRootCiEvent = generateRootCiEvent;
 const mapPipelineComponentToCiEvent = (pipelineComponent, parentComponentData, buildCiId, allChildrenFinished, runNumber) => {
     const componentName = pipelineComponent.name;
-    console.log(`${componentName} vs ${parentComponentData.jobName}`);
     const componentFullName = `${parentComponentData.jobName}/${componentName}`;
-    console.log(`${componentName} and full name: ${componentFullName}`);
     const ciEvent = {
         buildCiId,
         eventType: allChildrenFinished && pipelineComponent.conclusion
@@ -72686,6 +72683,7 @@ const mapPipelineComponentToCiEvent = (pipelineComponent, parentComponentData, b
         ciEvent.result = getRunResult(pipelineComponent.conclusion);
         ciEvent.duration = getRunDuration(pipelineComponent.started_at, pipelineComponent.completed_at);
     }
+    console.log(` - Map job to pipeline: ${JSON.stringify(ciEvent)}`);
     return ciEvent;
 };
 exports.mapPipelineComponentToCiEvent = mapPipelineComponentToCiEvent;
