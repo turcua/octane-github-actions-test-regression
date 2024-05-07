@@ -72343,7 +72343,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
             }
             const rootParentCauseData = {
                 isRoot: true,
-                jobName: pipelineData.rootJobName.replace("/build", ""),
+                jobName: pipelineData.rootJobName,
                 causeType: (_f = event.workflow_run) === null || _f === void 0 ? void 0 : _f.event,
                 userId: (_g = event.workflow_run) === null || _g === void 0 ? void 0 : _g.triggering_actor.login,
                 userName: (_h = event.workflow_run) === null || _h === void 0 ? void 0 : _h.triggering_actor.login
@@ -72661,7 +72661,7 @@ const generateRootCiEvent = (event, pipelineData, eventType, scmData) => {
 };
 exports.generateRootCiEvent = generateRootCiEvent;
 const mapPipelineComponentToCiEvent = (pipelineComponent, parentComponentData, buildCiId, allChildrenFinished, runNumber) => {
-    const componentName = pipelineComponent.name.replace("build/", "");
+    const componentName = pipelineComponent.name;
     console.log(`${componentName} vs ${parentComponentData.jobName}`);
     const componentFullName = `${parentComponentData.jobName}/${componentName}`;
     console.log(`${componentName} and full name: ${componentFullName}`);
