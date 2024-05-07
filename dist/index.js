@@ -72121,7 +72121,7 @@ OctaneClient.getPipeline = (rootJobName_1, ciServer_1, ...args_1) => __awaiter(v
         pipelines.total_count === 0 ||
         pipelines.data.length === 0) {
         if (createOnAbsence) {
-            return yield _a.createPipeline(rootJobName, ciServer);
+            return yield _a.createPipeline(rootJobName, ciServer, jobs);
         }
         else {
             throw new Error(`Pipeline '${rootJobName}' not found.`);
