@@ -72103,7 +72103,7 @@ OctaneClient.createPipeline = (rootJobName, ciServer, jobs) => __awaiter(void 0,
             id: ciServer.id
         },
         root_job_ci_id: rootJobName,
-        jobs: pipelineJobs
+        jobs: []
     })
         .execute()).data[0];
 });
