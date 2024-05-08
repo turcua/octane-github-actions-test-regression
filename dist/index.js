@@ -72316,6 +72316,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
             }
             const isWorkflowStarted = eventType == "in_progress" /* ActionsEventType.WORKFLOW_STARTED */;
             console.log(`Getting pipeline data...`);
+            console.log(`Workflow run ID: ${workflowRunId}`);
             const jobs = yield githubClient_1.default.getWorkflowRunJobs(owner, repoName, workflowRunId);
             let pipelineData = yield (0, pipelineDataService_1.getPipelineData)(event, eventType == "requested" /* ActionsEventType.WORKFLOW_QUEUED */, eventType != "completed" /* ActionsEventType.WORKFLOW_FINISHED */, jobs);
             if (isWorkflowStarted) {
