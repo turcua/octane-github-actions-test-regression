@@ -72442,7 +72442,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                     if (scmData) {
                         const rootSCMEvent = (0, ciEventsService_1.generateRootCiEvent)(event, pipelineData, "scm" /* CiEventType.SCM */, scmData);
                         console.log(`Root SCM event: ${JSON.stringify(rootQueuedEvent)}`);
-                        // rootEventsToSend.push(rootSCMEvent);
+                        rootEventsToSend.push(rootSCMEvent);
                         console.log(`Injecting commits since ${since}...`);
                     }
                 }
