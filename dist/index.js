@@ -72337,15 +72337,8 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                     number: (runNumber === null || runNumber === void 0 ? void 0 : runNumber.toString()) || pipelineData.buildCiId,
                     skipValidation: true
                 };
-                console.log(`--------------`);
-                yield (0, utils_1.sleep)(10000);
-                console.log(`Create CHILD pipeline: ${JSON.stringify(ciJobEvent)}`);
                 yield octaneClient_1.default.sendEvents([ciJobEvent], pipelineData.instanceId, pipelineData.baseUrl);
-                console.log(`--------------`);
-                yield (0, utils_1.sleep)(10000);
                 pipelineData = yield (0, pipelineDataService_1.getPipelineData)(event, false, false);
-                console.log(`--------------`);
-                yield (0, utils_1.sleep)(10000);
             }
             const rootParentCauseData = {
                 isRoot: true,
@@ -72436,6 +72429,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                 console.log(octaneBuilds.length);
                 if (octaneBuilds.length > 0) {
                     const since = new Date(octaneBuilds[0].start_time);
+                    since.setHours(0);
                     console.log(since);
                     const scmData = yield (0, scmDataService_1.collectSCMData)(event, owner, repoName, since);
                     if (scmData) {
