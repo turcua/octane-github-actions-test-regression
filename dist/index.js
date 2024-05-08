@@ -72432,7 +72432,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                         }
                     }
                 });
-                const rootQueuedEvent = (0, ciEventsService_1.generateRootCiEvent)(event, pipelineData, "started" /* CiEventType.STARTED */, undefined);
+                const rootQueuedEvent = (0, ciEventsService_1.generateRootCiEvent)(event, pipelineData, "started" /* CiEventType.STARTED */);
                 console.log(`Root event: ${JSON.stringify(rootQueuedEvent)}`);
                 const rootEventsToSend = [rootQueuedEvent];
                 const octaneBuilds = (yield octaneClient_1.default.getJobBuilds(pipelineData.rootJobName)).sort((build1, build2) => build2.start_time - build1.start_time);
@@ -72447,6 +72447,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                 }
                 yield octaneClient_1.default.sendEvents(rootEventsToSend, pipelineData.instanceId, pipelineData.baseUrl);
                 console.log('Polling for job updates...');
+                yield (0, utils_1.sleep)(10000);
                 yield pollForJobUpdates(3000, 2);
             }
             else if (eventType == "completed" /* ActionsEventType.WORKFLOW_FINISHED */) {
