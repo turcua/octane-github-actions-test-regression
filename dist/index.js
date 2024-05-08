@@ -72432,29 +72432,25 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                         }
                     }
                 });
-                const rootQueuedEvent = (0, ciEventsService_1.generateRootCiEvent)(event, pipelineData, "started" /* CiEventType.STARTED */);
-                console.log(`Root event: ${JSON.stringify(rootQueuedEvent)}`);
-                const rootEventsToSend = [];
                 const octaneBuilds = (yield octaneClient_1.default.getJobBuilds(pipelineData.rootJobName)).sort((build1, build2) => build2.start_time - build1.start_time);
+                console.log(octaneBuilds.length);
                 if (octaneBuilds.length > 0) {
                     const since = new Date(octaneBuilds[0].start_time);
+                    console.log(since);
                     const scmData = yield (0, scmDataService_1.collectSCMData)(event, owner, repoName, since);
                     if (scmData) {
                         const rootSCMEvent = (0, ciEventsService_1.generateRootCiEvent)(event, pipelineData, "scm" /* CiEventType.SCM */, scmData);
-                        console.log(`Root SCM event: ${JSON.stringify(rootQueuedEvent)}`);
-                        rootEventsToSend.push(rootSCMEvent);
                         console.log(`Injecting commits since ${since}...`);
+                        yield octaneClient_1.default.sendEvents([rootSCMEvent], pipelineData.instanceId, pipelineData.baseUrl);
                     }
                 }
-                yield octaneClient_1.default.sendEvents(rootEventsToSend, pipelineData.instanceId, pipelineData.baseUrl);
                 console.log('Polling for job updates...');
-                yield (0, utils_1.sleep)(10000);
                 yield pollForJobUpdates(3000, 2);
             }
             else if (eventType == "completed" /* ActionsEventType.WORKFLOW_FINISHED */) {
                 console.log('Waiting for queued events to finish up...');
                 yield (0, ciEventsService_1.pollForJobsOfTypeToFinish)(owner, repoName, currentRun, workflowRunId, startTime, "in_progress" /* ActionsEventType.WORKFLOW_STARTED */);
-                const completedEvent = (0, ciEventsService_1.generateRootCiEvent)(event, pipelineData, "finished" /* CiEventType.FINISHED */, undefined);
+                const completedEvent = (0, ciEventsService_1.generateRootCiEvent)(event, pipelineData, "finished" /* CiEventType.FINISHED */);
                 console.log(`Root event: ${JSON.stringify(completedEvent)}`);
                 yield octaneClient_1.default.sendEvents([completedEvent], pipelineData.instanceId, pipelineData.baseUrl);
                 if ((0, config_1.getConfig)().unitTestResultsGlobPattern) {
