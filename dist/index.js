@@ -72434,7 +72434,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                 });
                 const rootQueuedEvent = (0, ciEventsService_1.generateRootCiEvent)(event, pipelineData, "started" /* CiEventType.STARTED */);
                 console.log(`Root event: ${JSON.stringify(rootQueuedEvent)}`);
-                const rootEventsToSend = [rootQueuedEvent];
+                const rootEventsToSend = [];
                 const octaneBuilds = (yield octaneClient_1.default.getJobBuilds(pipelineData.rootJobName)).sort((build1, build2) => build2.start_time - build1.start_time);
                 if (octaneBuilds.length > 0) {
                     const since = new Date(octaneBuilds[0].start_time);
