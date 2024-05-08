@@ -72427,10 +72427,10 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                 });
                 const octaneBuilds = (yield octaneClient_1.default.getJobBuilds(pipelineData.rootJobName)).sort((build1, build2) => build2.start_time - build1.start_time);
                 console.log(octaneBuilds.length);
-                if (octaneBuilds.length > 0) {
-                    const since = new Date(octaneBuilds[0].start_time);
-                    since.setHours(0);
-                    console.log(since);
+                if (octaneBuilds.length > 1) {
+                    // Current build is already existing in Octane at this point,
+                    // so we must take the start time of the second oldest build.
+                    const since = new Date(octaneBuilds[1].start_time);
                     const scmData = yield (0, scmDataService_1.collectSCMData)(event, owner, repoName, since);
                     if (scmData) {
                         const rootSCMEvent = (0, ciEventsService_1.generateRootCiEvent)(event, pipelineData, "scm" /* CiEventType.SCM */, scmData);
