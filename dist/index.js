@@ -72606,10 +72606,10 @@ const pollForJobsOfTypeToFinish = (owner, repoName, currentRun, workflowRunId, s
                 return (runEventType === eventType &&
                     Number.parseInt(triggeredByRunId) === workflowRunId);
             });
-            console.log(`Current run: ${JSON.stringify(currentRun.id)}, current workflow: ${JSON.stringify(workflowRunId)} and found runs: ${JSON.stringify(runsToWaitFor.map(run => run.id))}, jobs length: ${jobs.length}`);
+            console.log(`Current run: ${JSON.stringify(currentRun.id)}, current workflow: ${JSON.stringify(workflowRunId)} and found runs: ${JSON.stringify(jobs.map(job => job.id))}, jobs length: ${jobs.length}`);
             return jobs.length > 0;
         }));
-        console.log(`After getting not finished runs`);
+        console.log(`After getting not finished runs: ${JSON.stringify(runsToWaitFor.map(run => run.id))}, runs: ${runsToWaitFor.length}, result: ${runsToWaitFor.length === 0}`);
         done = runsToWaitFor.length === 0;
         yield (0, utils_1.sleep)(2000);
     }
