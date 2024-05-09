@@ -72601,7 +72601,8 @@ const pollForJobsOfTypeToFinish = (owner, repoName, currentRun, workflowRunId, s
                 const nameComponents = job.name.split('#');
                 const runEventType = nameComponents[1];
                 const triggeredByRunId = nameComponents[2];
-                console.log(`Found run: ${JSON.stringify(run.id)} triggered by: ${triggeredByRunId}`);
+                console.log(`Found job: ${JSON.stringify(run.id)} triggered by: ${triggeredByRunId}, result: ${runEventType === eventType &&
+                    Number.parseInt(triggeredByRunId) === workflowRunId}`);
                 return (runEventType === eventType &&
                     Number.parseInt(triggeredByRunId) === workflowRunId);
             });
