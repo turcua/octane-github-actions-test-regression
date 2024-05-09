@@ -72596,7 +72596,7 @@ const pollForJobsOfTypeToFinish = (owner, repoName, currentRun, workflowRunId, s
         const notFinishedRuns = yield getNotFinishedRuns(owner, repoName, startTime, currentRun);
         // Integration job name structure is: OctaneIntegration#${{github.event.action}}#${{github.event.workflow_run.id}}
         console.log(`Before getting not finished runs`);
-        const runsToWaitFor = notFinishedRuns.filter((run) => __awaiter(void 0, void 0, void 0, function* () {
+        const runsToWaitFor = yield Promise.all(notFinishedRuns.filter((run) => __awaiter(void 0, void 0, void 0, function* () {
             const jobs = (yield githubClient_1.default.getWorkflowRunJobs(owner, repoName, run.id)).filter(job => {
                 const nameComponents = job.name.split('#');
                 const runEventType = nameComponents[1];
@@ -72608,7 +72608,7 @@ const pollForJobsOfTypeToFinish = (owner, repoName, currentRun, workflowRunId, s
             });
             console.log(`Current run: ${JSON.stringify(currentRun.id)}, current workflow: ${JSON.stringify(workflowRunId)} and found runs: ${JSON.stringify(jobs.map(job => job.id))}, jobs length: ${jobs.length}, result: ${jobs.length > 0}`);
             return jobs.length > 0;
-        }));
+        })));
         console.log(`After getting not finished runs: ${JSON.stringify(runsToWaitFor.map(run => run.id))}, runs: ${runsToWaitFor.length}, result: ${runsToWaitFor.length === 0}`);
         done = runsToWaitFor.length === 0;
         yield (0, utils_1.sleep)(2000);
