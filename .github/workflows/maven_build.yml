@@ -1,4 +1,4 @@
-name: Maven Build and Run
+name: Java CI with Maven
 
 on:
   workflow_dispatch:
