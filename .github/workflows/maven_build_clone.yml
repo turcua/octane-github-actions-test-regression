@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: Other Java CI with Maven
 
 on:
   workflow_dispatch:
