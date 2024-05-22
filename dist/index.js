@@ -94236,6 +94236,13 @@ class GitHubClient {
 exports["default"] = GitHubClient;
 _a = GitHubClient;
 GitHubClient.octokit = (0, github_1.getOctokit)((0, config_1.getConfig)().githubToken);
+GitHubClient.getWorkflow = (owner, repo, workflowId) => __awaiter(void 0, void 0, void 0, function* () {
+    return (yield _a.octokit.rest.actions.getWorkflow({
+        owner,
+        repo,
+        workflow_id: workflowId
+    })).data;
+});
 GitHubClient.getWorkflowRunJobs = (owner, repo, workflowRunId) => __awaiter(void 0, void 0, void 0, function* () {
     return yield _a.octokit.paginate(_a.octokit.rest.actions.listJobsForWorkflowRun, {
         owner,
@@ -94415,7 +94422,7 @@ OctaneClient.createCISever = (name, instanceId, url) => __awaiter(void 0, void 0
 OctaneClient.createPipeline = (rootJobName, ciServer, jobs) => __awaiter(void 0, void 0, void 0, function* () {
     const pipelineJobs = jobs === null || jobs === void 0 ? void 0 : jobs.map(job => {
         const jobName = job.name;
-        const jobFullName = `${rootJobName}/${jobName}`;
+        const jobFullName = `TEST/${rootJobName}/${jobName}`;
         return {
             name: jobName,
             jobCiId: jobFullName
@@ -94423,7 +94430,7 @@ OctaneClient.createPipeline = (rootJobName, ciServer, jobs) => __awaiter(void 0,
     });
     pipelineJobs === null || pipelineJobs === void 0 ? void 0 : pipelineJobs.push({
         name: rootJobName,
-        jobCiId: rootJobName
+        jobCiId: `TEST/${rootJobName}`
     });
     console.log(`Creating pipeline '${rootJobName}'...`);
     return (yield _a.octane
@@ -94433,7 +94440,7 @@ OctaneClient.createPipeline = (rootJobName, ciServer, jobs) => __awaiter(void 0,
             type: 'ci_server',
             id: ciServer.id
         },
-        root_job_ci_id: rootJobName,
+        root_job_ci_id: `TEST/${rootJobName}`,
         jobs: pipelineJobs
     })
         .execute()).data[0];
@@ -94774,7 +94781,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                 const completedEvent = (0, ciEventsService_1.generateRootCiEvent)(event, pipelineData, "finished" /* CiEventType.FINISHED */);
                 yield octaneClient_1.default.sendEvents([completedEvent], pipelineData.instanceId, pipelineData.baseUrl);
                 if ((0, config_1.getConfig)().unitTestResultsGlobPattern) {
-                    yield (0, testResultsService_1.sendJUnitTestResults)(owner, repoName, workflowRunId, pipelineData.buildCiId, pipelineData.rootJobName, pipelineData.instanceId);
+                    yield (0, testResultsService_1.sendJUnitTestResults)(owner, repoName, workflowRunId, pipelineData.buildCiId, `TEST/${pipelineData.rootJobName}`, pipelineData.instanceId);
                 }
             }
             break;
@@ -94961,14 +94968,14 @@ const generateRootCiEvent = (event, pipelineData, eventType, scmData) => {
         buildCiId: pipelineData.buildCiId,
         eventType,
         number: ((_b = (_a = event.workflow_run) === null || _a === void 0 ? void 0 : _a.run_number) === null || _b === void 0 ? void 0 : _b.toString()) || pipelineData.buildCiId,
-        project: pipelineData.rootJobName,
+        project: `TEST/${pipelineData.rootJobName}`,
         projectDisplayName: pipelineData.rootJobName,
         startTime: ((_c = event.workflow_run) === null || _c === void 0 ? void 0 : _c.run_started_at)
             ? new Date(event.workflow_run.run_started_at).getTime()
             : new Date().getTime(),
         causes: (0, eventCauseBuilder_1.getCiEventCauses)({
             isRoot: true,
-            jobName: pipelineData.rootJobName,
+            jobName: `TEST/${pipelineData.rootJobName}`,
             causeType: (_d = event.workflow_run) === null || _d === void 0 ? void 0 : _d.event,
             userId: (_e = event.workflow_run) === null || _e === void 0 ? void 0 : _e.triggering_actor.login,
             userName: (_f = event.workflow_run) === null || _f === void 0 ? void 0 : _f.triggering_actor.login
@@ -94996,14 +95003,14 @@ const mapPipelineComponentToCiEvent = (pipelineComponent, parentComponentData, b
             ? "finished" /* CiEventType.FINISHED */
             : "started" /* CiEventType.STARTED */,
         number: (runNumber === null || runNumber === void 0 ? void 0 : runNumber.toString()) || buildCiId,
-        project: componentFullName,
+        project: `TEST/${componentFullName}`,
         projectDisplayName: componentName,
         startTime: pipelineComponent.started_at
             ? new Date(pipelineComponent.started_at).getTime()
             : new Date().getTime(),
         causes: (0, eventCauseBuilder_1.getCiEventCauses)({
             isRoot: false,
-            jobName: componentFullName,
+            jobName: `TEST/${componentFullName}`,
             parentJobData: parentComponentData
         }, buildCiId)
     };
