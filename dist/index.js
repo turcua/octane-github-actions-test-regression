@@ -94668,7 +94668,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                     eventType: "started" /* CiEventType.STARTED */,
                     startTime: startTime,
                     multiBranchType: "CHILD" /* MultiBranchType.CHILD */,
-                    parentCiId: pipelineData.rootJobName,
+                    parentCiId: `TEST/${pipelineData.rootJobName}`,
                     branch: branchName,
                     number: (runNumber === null || runNumber === void 0 ? void 0 : runNumber.toString()) || pipelineData.buildCiId,
                     skipValidation: true
