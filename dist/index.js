@@ -94663,7 +94663,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                 console.log(`Creating child pipeline: ${pipelineData.rootJobName}/${branchName}`);
                 let ciStartedPipelineEvent = {
                     buildCiId: pipelineData.buildCiId,
-                    project: `${pipelineData.rootJobName}/${branchName}`,
+                    project: `TEST/${pipelineData.rootJobName}/${branchName}`,
                     projectDisplayName: `${pipelineData.rootJobName}/${branchName}`,
                     eventType: "started" /* CiEventType.STARTED */,
                     startTime: startTime,
@@ -94975,7 +94975,7 @@ const generateRootCiEvent = (event, pipelineData, eventType, scmData) => {
             : new Date().getTime(),
         causes: (0, eventCauseBuilder_1.getCiEventCauses)({
             isRoot: true,
-            jobName: `${pipelineData.rootJobName}`,
+            jobName: `TEST/${pipelineData.rootJobName}`,
             causeType: (_d = event.workflow_run) === null || _d === void 0 ? void 0 : _d.event,
             userId: (_e = event.workflow_run) === null || _e === void 0 ? void 0 : _e.triggering_actor.login,
             userName: (_f = event.workflow_run) === null || _f === void 0 ? void 0 : _f.triggering_actor.login
@@ -95010,7 +95010,7 @@ const mapPipelineComponentToCiEvent = (pipelineComponent, parentComponentData, b
             : new Date().getTime(),
         causes: (0, eventCauseBuilder_1.getCiEventCauses)({
             isRoot: false,
-            jobName: `${componentFullName}`,
+            jobName: `TEST/${componentFullName}`,
             parentJobData: parentComponentData
         }, buildCiId)
     };
