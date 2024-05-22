@@ -21,6 +21,8 @@ jobs:
         java-version: '21'
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    - name: Run JUnit Tests
+      run: mvn test
     - name: Stage
       run: mkdir staging && cp target/*.jar staging
     - name: Run JAR files
