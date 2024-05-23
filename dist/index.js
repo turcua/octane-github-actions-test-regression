@@ -95014,7 +95014,7 @@ const mapPipelineComponentToCiEvent = (pipelineComponent, parentComponentData, b
             ? "finished" /* CiEventType.FINISHED */
             : "started" /* CiEventType.STARTED */,
         number: (runNumber === null || runNumber === void 0 ? void 0 : runNumber.toString()) || buildCiId,
-        project: `TEST/${componentFullName}`,
+        project: componentFullName,
         projectDisplayName: componentName,
         startTime: pipelineComponent.started_at
             ? new Date(pipelineComponent.started_at).getTime()
@@ -95022,7 +95022,7 @@ const mapPipelineComponentToCiEvent = (pipelineComponent, parentComponentData, b
         causes: (0, eventCauseBuilder_1.getCiEventCauses)({
             isRoot: false,
             jobName: `TEST/${componentFullName}`,
-            parentJobData: parentComponentData
+            parentJobData: parentJobData
         }, buildCiId)
     };
     if (ciEvent.eventType == "finished" /* CiEventType.FINISHED */) {
