@@ -26,11 +26,14 @@ jobs:
         # Config parameters for the integration
         with:
           # ALM Octane connection data
-          octaneUrl: 'https://pmo7.almoctane.com'
+          # octaneUrl: 'https://pmo7.almoctane.com' # PMO7
+          octaneUrl: 'https://falcon-apt-usually.ngrok-free.app/dev'
           octaneSharedSpace: 1001
-          octaneWorkspace: 2001
-          octaneClientId: ${{secrets.ALM_OCTANE_CLIENT_ID}}
-          octaneClientSecret: ${{secrets.ALM_OCTANE_CLIENT_SECRET}}
+          octaneWorkspace: 1002 # PMO7: 2001
+          octaneClientId: Github Actions_63nlz16n2g1wriy12e8vrx0k9
+          #octaneClientId: ${{secrets.ALM_OCTANE_CLIENT_ID}} # PMO7
+          octaneClientSecret: $232172107244198220196198E
+          #octaneClientSecret: ${{secrets.ALM_OCTANE_CLIENT_SECRET}} # PMO7
           # Automatically provided GitHub token
           githubToken: ${{secrets.GITHUB_TOKEN}}
           # The url that the CI Server in ALM Octane will point to (own)
