@@ -94236,13 +94236,6 @@ class GitHubClient {
 exports["default"] = GitHubClient;
 _a = GitHubClient;
 GitHubClient.octokit = (0, github_1.getOctokit)((0, config_1.getConfig)().githubToken);
-GitHubClient.getWorkflow = (owner, repo, workflowId) => __awaiter(void 0, void 0, void 0, function* () {
-    return (yield _a.octokit.rest.actions.getWorkflow({
-        owner,
-        repo,
-        workflow_id: workflowId
-    })).data;
-});
 GitHubClient.getWorkflowRunJobs = (owner, repo, workflowRunId) => __awaiter(void 0, void 0, void 0, function* () {
     return yield _a.octokit.paginate(_a.octokit.rest.actions.listJobsForWorkflowRun, {
         owner,
@@ -94634,13 +94627,14 @@ const scmDataService_1 = __nccwpck_require__(39266);
 const testResultsService_1 = __nccwpck_require__(29058);
 const utils_1 = __nccwpck_require__(80239);
 const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
     const startTime = new Date().getTime();
     const eventType = (0, ciEventsService_1.getEventType)(event);
     const owner = (_a = event.repository) === null || _a === void 0 ? void 0 : _a.owner.login;
     const repoName = (_b = event.repository) === null || _b === void 0 ? void 0 : _b.name;
-    const workflowRunId = (_c = event.workflow_run) === null || _c === void 0 ? void 0 : _c.id;
-    const runNumber = (_d = event.workflow_run) === null || _d === void 0 ? void 0 : _d.run_number;
+    const workflowFilePath = (_c = event.workflow) === null || _c === void 0 ? void 0 : _c.path;
+    const workflowRunId = (_d = event.workflow_run) === null || _d === void 0 ? void 0 : _d.id;
+    const runNumber = (_e = event.workflow_run) === null || _e === void 0 ? void 0 : _e.run_number;
     if (!owner || !repoName) {
         throw new Error('Event should contain repository data!');
     }
@@ -94652,16 +94646,19 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
             if (!workflowRunId) {
                 throw new Error('Event should contain workflow run id!');
             }
+            if (!workflowFilePath) {
+                throw new Error('Event should contain workflow file path!');
+            }
             const isWorkflowStarted = eventType == "in_progress" /* ActionsEventType.WORKFLOW_STARTED */;
             console.log(`Getting pipeline data... ${JSON.stringify(event)}`);
             const jobs = yield githubClient_1.default.getWorkflowRunJobs(owner, repoName, workflowRunId);
-            const workflowFileName = (yield githubClient_1.default.getWorkflow(owner, repoName, workflowRunId)).path;
+            const workflowFileName = (0, utils_1.extractWorkflowFileName)(workflowFilePath);
             console.log(workflowFileName);
             const jobCiIdPrefix = `${owner}/${repoName}/${workflowFileName}`;
             const pipelineName = (0, pipelineDataService_1.getPipelineName)(event, owner, repoName, workflowFileName, eventType != "completed" /* ActionsEventType.WORKFLOW_FINISHED */);
             let pipelineData = yield (0, pipelineDataService_1.getPipelineData)(pipelineName, event, eventType == "requested" /* ActionsEventType.WORKFLOW_QUEUED */, jobs);
             if (isWorkflowStarted) {
-                const branchName = (_e = event.workflow_run) === null || _e === void 0 ? void 0 : _e.head_branch;
+                const branchName = (_f = event.workflow_run) === null || _f === void 0 ? void 0 : _f.head_branch;
                 if (!branchName) {
                     throw new Error('Event should contain workflow data!');
                 }
@@ -94684,14 +94681,14 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
             const rootParentCauseData = {
                 isRoot: true,
                 jobName: `${jobCiIdPrefix}/${pipelineData.rootJobName}`,
-                causeType: (_f = event.workflow_run) === null || _f === void 0 ? void 0 : _f.event,
-                userId: (_g = event.workflow_run) === null || _g === void 0 ? void 0 : _g.triggering_actor.login,
-                userName: (_h = event.workflow_run) === null || _h === void 0 ? void 0 : _h.triggering_actor.login
+                causeType: (_g = event.workflow_run) === null || _g === void 0 ? void 0 : _g.event,
+                userId: (_h = event.workflow_run) === null || _h === void 0 ? void 0 : _h.triggering_actor.login,
+                userName: (_j = event.workflow_run) === null || _j === void 0 ? void 0 : _j.triggering_actor.login
             };
             console.log(`Root parent cause data: ${JSON.stringify(rootParentCauseData)}`);
             if (isWorkflowStarted) {
                 const pollForJobStepUpdates = (jobId, interval) => __awaiter(void 0, void 0, void 0, function* () {
-                    var _k;
+                    var _l;
                     let done = false;
                     let alreadySentStartedEvent = false;
                     let allStepsFinished = false;
@@ -94706,7 +94703,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                             yield octaneClient_1.default.sendEvents([ciJobEvent], pipelineData.instanceId, pipelineData.baseUrl);
                             alreadySentStartedEvent = true;
                         }
-                        const steps = ((_k = job.steps) === null || _k === void 0 ? void 0 : _k.sort((step1, step2) => step1.number - step2.number)) ||
+                        const steps = ((_l = job.steps) === null || _l === void 0 ? void 0 : _l.sort((step1, step2) => step1.number - step2.number)) ||
                             [];
                         allStepsFinished =
                             steps &&
@@ -94798,7 +94795,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
         case "edited" /* ActionsEventType.PULL_REQUEST_EDITED */:
         case "reopened" /* ActionsEventType.PULL_REQUEST_REOPENED */:
             console.log(`Received pull request event...`);
-            if (!event.pull_request || !((_j = event.repository) === null || _j === void 0 ? void 0 : _j.html_url)) {
+            if (!event.pull_request || !((_k = event.repository) === null || _k === void 0 ? void 0 : _k.html_url)) {
                 throw new Error('Pull request data and repository url should be present!');
             }
             const gitHubPullRequest = event.pull_request;
@@ -95516,7 +95513,7 @@ exports.sendJUnitTestResults = sendJUnitTestResults;
 /***/ }),
 
 /***/ 80239:
-/***/ (function(__unused_webpack_module, exports) {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
@@ -95548,6 +95545,29 @@ exports.sendJUnitTestResults = sendJUnitTestResults;
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -95558,7 +95578,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.sleep = void 0;
+exports.sleep = exports.extractWorkflowFileName = void 0;
+const path = __importStar(__nccwpck_require__(71017));
+const extractWorkflowFileName = (workflowPath) => {
+    return `${path.basename(workflowPath)}.${path.extname(workflowPath)}`;
+};
+exports.extractWorkflowFileName = extractWorkflowFileName;
 const sleep = (milis) => __awaiter(void 0, void 0, void 0, function* () {
     return new Promise(resolve => {
         setTimeout(resolve, milis);
