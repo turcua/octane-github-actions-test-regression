@@ -94679,7 +94679,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
             }
             const rootParentCauseData = {
                 isRoot: true,
-                jobName: pipelineData.rootJobName,
+                jobName: `TEST/${pipelineData.rootJobName}`,
                 causeType: (_f = event.workflow_run) === null || _f === void 0 ? void 0 : _f.event,
                 userId: (_g = event.workflow_run) === null || _g === void 0 ? void 0 : _g.triggering_actor.login,
                 userName: (_h = event.workflow_run) === null || _h === void 0 ? void 0 : _h.triggering_actor.login
@@ -94710,7 +94710,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                         for (const step of steps) {
                             const stepCiEvent = (0, ciEventsService_1.mapPipelineComponentToCiEvent)(step, {
                                 isRoot: false,
-                                jobName: `TEST/${rootParentCauseData.jobName}/${job.name}`,
+                                jobName: `${rootParentCauseData.jobName}/${job.name}`,
                                 parentJobData: rootParentCauseData
                             }, pipelineData.buildCiId, true, runNumber);
                             console.log(`CI Step event: ${JSON.stringify(stepCiEvent)}`);
@@ -95001,28 +95001,21 @@ exports.generateRootCiEvent = generateRootCiEvent;
 const mapPipelineComponentToCiEvent = (pipelineComponent, parentComponentData, buildCiId, allChildrenFinished, runNumber) => {
     const componentName = pipelineComponent.name;
     const componentFullName = `${parentComponentData.jobName}/${componentName}`;
-    const parentJobData = {
-        isRoot: parentComponentData.isRoot,
-        jobName: `TEST/${parentComponentData.jobName}`,
-        causeType: parentComponentData.causeType,
-        userId: parentComponentData.userId,
-        userName: parentComponentData.userName
-    };
     const ciEvent = {
         buildCiId,
         eventType: allChildrenFinished && pipelineComponent.conclusion
             ? "finished" /* CiEventType.FINISHED */
             : "started" /* CiEventType.STARTED */,
         number: (runNumber === null || runNumber === void 0 ? void 0 : runNumber.toString()) || buildCiId,
-        project: `TEST/${componentFullName}`,
+        project: componentFullName,
         projectDisplayName: componentName,
         startTime: pipelineComponent.started_at
             ? new Date(pipelineComponent.started_at).getTime()
             : new Date().getTime(),
         causes: (0, eventCauseBuilder_1.getCiEventCauses)({
             isRoot: false,
-            jobName: `TEST/${componentFullName}`,
-            parentJobData: parentJobData
+            jobName: componentFullName,
+            parentJobData: parentComponentData
         }, buildCiId)
     };
     if (ciEvent.eventType == "finished" /* CiEventType.FINISHED */) {
