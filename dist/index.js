@@ -95018,7 +95018,7 @@ const mapPipelineComponentToCiEvent = (pipelineComponent, parentComponentData, b
         causes: (0, eventCauseBuilder_1.getCiEventCauses)({
             isRoot: false,
             jobName: `TEST/${componentFullName}`,
-            parentJobData: parentJobData
+            parentJobData: parentComponentData
         }, buildCiId)
     };
     if (ciEvent.eventType == "finished" /* CiEventType.FINISHED */) {
