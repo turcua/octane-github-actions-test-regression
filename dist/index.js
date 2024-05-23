@@ -94665,12 +94665,12 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                 console.log(`Creating child pipeline: ${pipelineData.rootJobName}/${branchName}`);
                 let ciStartedPipelineEvent = {
                     buildCiId: pipelineData.buildCiId,
-                    project: `${jobCiIdPrefix}/${pipelineData.rootJobName}/${branchName}`,
+                    project: `${pipelineData.rootJobName}/${branchName}`,
                     projectDisplayName: `${pipelineData.rootJobName}/${branchName}`,
                     eventType: "started" /* CiEventType.STARTED */,
                     startTime: startTime,
                     multiBranchType: "CHILD" /* MultiBranchType.CHILD */,
-                    parentCiId: `${pipelineData.rootJobName}`,
+                    parentCiId: `${jobCiIdPrefix}/${pipelineData.rootJobName}`,
                     branch: branchName,
                     number: (runNumber === null || runNumber === void 0 ? void 0 : runNumber.toString()) || pipelineData.buildCiId,
                     skipValidation: true
