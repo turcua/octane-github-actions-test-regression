@@ -95014,7 +95014,7 @@ const mapPipelineComponentToCiEvent = (pipelineComponent, parentComponentData, b
             ? "finished" /* CiEventType.FINISHED */
             : "started" /* CiEventType.STARTED */,
         number: (runNumber === null || runNumber === void 0 ? void 0 : runNumber.toString()) || buildCiId,
-        project: `${componentFullName}`,
+        project: `TEST/${componentFullName}`,
         projectDisplayName: componentName,
         startTime: pipelineComponent.started_at
             ? new Date(pipelineComponent.started_at).getTime()
