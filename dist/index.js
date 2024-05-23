@@ -94433,6 +94433,7 @@ OctaneClient.createPipeline = (rootJobName, ciServer, jobs) => __awaiter(void 0,
         jobCiId: `TEST/${rootJobName}`
     });
     console.log(`Creating pipeline '${rootJobName}'...`);
+    console.log(`${pipelineJobs}`);
     return (yield _a.octane
         .create('pipelines', {
         name: rootJobName,
