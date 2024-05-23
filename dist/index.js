@@ -95206,8 +95206,8 @@ const getPipelineName = (event, owner, repoName, workflowFileName, isParent) => 
     if (!workflowName || !branchName) {
         throw new Error('Event should contain workflow data!');
     }
-    const pipelineName = isParent ? `${workflowName} [${repoName}]`
-        : `${workflowName} [${repoName}]/${branchName}`;
+    const pipelineName = isParent ? `${workflowName}, ${repoName}`
+        : `${workflowName}, ${repoName}/${branchName}`;
     return pipelineName;
 };
 exports.getPipelineName = getPipelineName;
