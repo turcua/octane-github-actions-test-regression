@@ -94653,7 +94653,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                 throw new Error('Event should contain workflow run id!');
             }
             const isWorkflowStarted = eventType == "in_progress" /* ActionsEventType.WORKFLOW_STARTED */;
-            console.log(`Getting pipeline data...`);
+            console.log(`Getting pipeline data... ${event}`);
             const jobs = yield githubClient_1.default.getWorkflowRunJobs(owner, repoName, workflowRunId);
             const workflowFileName = (yield githubClient_1.default.getWorkflow(owner, repoName, workflowRunId)).path;
             console.log(workflowFileName);
