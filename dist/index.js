@@ -94665,12 +94665,12 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                 console.log(`Creating child pipeline: ${pipelineData.rootJobName}/${branchName}`);
                 let ciStartedPipelineEvent = {
                     buildCiId: pipelineData.buildCiId,
-                    project: `${pipelineData.rootJobName}/${branchName}`,
+                    project: `${jobCiIdPrefix}/${pipelineData.rootJobName}/${branchName}`,
                     projectDisplayName: `${pipelineData.rootJobName}/${branchName}`,
                     eventType: "started" /* CiEventType.STARTED */,
                     startTime: startTime,
                     multiBranchType: "CHILD" /* MultiBranchType.CHILD */,
-                    parentCiId: `${jobCiIdPrefix}/${pipelineData.rootJobName}`,
+                    parentCiId: `${pipelineData.rootJobName}`,
                     branch: branchName,
                     number: (runNumber === null || runNumber === void 0 ? void 0 : runNumber.toString()) || pipelineData.buildCiId,
                     skipValidation: true
@@ -95581,7 +95581,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.sleep = exports.extractWorkflowFileName = void 0;
 const path = __importStar(__nccwpck_require__(71017));
 const extractWorkflowFileName = (workflowPath) => {
-    return `${path.basename(workflowPath)}.${path.extname(workflowPath)}`;
+    return path.basename(workflowPath);
 };
 exports.extractWorkflowFileName = extractWorkflowFileName;
 const sleep = (milis) => __awaiter(void 0, void 0, void 0, function* () {
