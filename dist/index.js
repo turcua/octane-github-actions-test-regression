@@ -94684,6 +94684,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                 userId: (_g = event.workflow_run) === null || _g === void 0 ? void 0 : _g.triggering_actor.login,
                 userName: (_h = event.workflow_run) === null || _h === void 0 ? void 0 : _h.triggering_actor.login
             };
+            console.log(`Root parent cause data: ${JSON.stringify(rootParentCauseData)}`);
             if (isWorkflowStarted) {
                 const pollForJobStepUpdates = (jobId, interval) => __awaiter(void 0, void 0, void 0, function* () {
                     var _k;
@@ -94695,6 +94696,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                         done = allStepsFinished;
                         const job = yield githubClient_1.default.getJob(owner, repoName, jobId);
                         let ciJobEvent = (0, ciEventsService_1.mapPipelineComponentToCiEvent)(job, rootParentCauseData, pipelineData.buildCiId, allStepsFinished, runNumber);
+                        console.log(`CI Job event: ${JSON.stringify(ciJobEvent)}`);
                         if (!alreadySentStartedEvent ||
                             ciJobEvent.eventType == "finished" /* CiEventType.FINISHED */) {
                             yield octaneClient_1.default.sendEvents([ciJobEvent], pipelineData.instanceId, pipelineData.baseUrl);
@@ -94711,6 +94713,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                                 jobName: `TEST/${rootParentCauseData.jobName}/${job.name}`,
                                 parentJobData: rootParentCauseData
                             }, pipelineData.buildCiId, true, runNumber);
+                            console.log(`CI Step event: ${JSON.stringify(stepCiEvent)}`);
                             if (!stepsStarted.has(step.number) &&
                                 stepCiEvent.eventType == "finished" /* CiEventType.FINISHED */) {
                                 yield octaneClient_1.default.sendEvents([Object.assign(Object.assign({}, stepCiEvent), { eventType: "started" /* CiEventType.STARTED */ })], pipelineData.instanceId, pipelineData.baseUrl);
