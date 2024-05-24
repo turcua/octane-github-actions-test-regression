@@ -38,5 +38,7 @@ jobs:
           githubToken: ${{secrets.GITHUB_TOKEN}}
           # The url that the CI Server in ALM Octane will point to (own)
           serverBaseUrl: https://github.com/Stefan923/octane-github-actions-test
+          # Pattern for building the name of the pipeline
+          pipelineNamePattern: '${workflow_name}'
           # Pattern for identifying JUnit style report files for test result injection in ALM Octane
           unitTestResultsGlobPattern: "**/*.xml"
