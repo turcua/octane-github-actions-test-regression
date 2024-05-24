@@ -94546,6 +94546,7 @@ try {
         octaneClientSecret: (0, core_1.getInput)('octaneClientSecret'),
         githubToken: (0, core_1.getInput)('githubToken'),
         serverBaseUrl: (0, core_1.getInput)('serverBaseUrl'),
+        pipelineNamePattern: (0, core_1.getInput)('pipelineNamePattern'),
         unitTestResultsGlobPattern: (0, core_1.getInput)('unitTestResultsGlobPattern')
     };
 }
@@ -94635,6 +94636,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
     const workflowFilePath = (_c = event.workflow) === null || _c === void 0 ? void 0 : _c.path;
     const workflowRunId = (_d = event.workflow_run) === null || _d === void 0 ? void 0 : _d.id;
     const runNumber = (_e = event.workflow_run) === null || _e === void 0 ? void 0 : _e.run_number;
+    const pipelineNamePattern = (0, config_1.getConfig)().pipelineNamePattern;
     if (!owner || !repoName) {
         throw new Error('Event should contain repository data!');
     }
@@ -94655,7 +94657,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
             const workflowFileName = (0, utils_1.extractWorkflowFileName)(workflowFilePath);
             console.log(workflowFileName);
             const jobCiIdPrefix = `${owner}/${repoName}/${workflowFileName}`;
-            const pipelineName = (0, pipelineDataService_1.getPipelineName)(event, owner, repoName, workflowFileName, eventType != "completed" /* ActionsEventType.WORKFLOW_FINISHED */);
+            const pipelineName = (0, pipelineDataService_1.getPipelineName)(event, owner, repoName, workflowFileName, eventType != "completed" /* ActionsEventType.WORKFLOW_FINISHED */, pipelineNamePattern);
             let pipelineData = yield (0, pipelineDataService_1.getPipelineData)(pipelineName, event, eventType == "requested" /* ActionsEventType.WORKFLOW_QUEUED */, jobCiIdPrefix, jobs);
             if (isWorkflowStarted) {
                 const branchName = (_f = event.workflow_run) === null || _f === void 0 ? void 0 : _f.head_branch;
@@ -95199,15 +95201,18 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getPipelineData = exports.getPipelineName = void 0;
 const octaneClient_1 = __importDefault(__nccwpck_require__(18607));
 const config_1 = __nccwpck_require__(84561);
-const getPipelineName = (event, owner, repoName, workflowFileName, isParent) => {
+const getPipelineName = (event, owner, repoName, workflowFileName, isParent, pattern) => {
     var _a, _b;
     const workflowName = (_a = event.workflow) === null || _a === void 0 ? void 0 : _a.name;
     const branchName = (_b = event.workflow_run) === null || _b === void 0 ? void 0 : _b.head_branch;
     if (!workflowName || !branchName) {
         throw new Error('Event should contain workflow data!');
     }
-    const pipelineName = isParent ? `${workflowName} - ${repoName}`
-        : `${workflowName} - ${repoName}/${branchName}`;
+    const tempPipelineName = pattern.replace('${repository_owner}', owner)
+        .replace('${repository_name}', repoName)
+        .replace('${workflow_name}', workflowName)
+        .replace('${workflow_file_name}', workflowFileName);
+    const pipelineName = isParent ? tempPipelineName : `${tempPipelineName}/${branchName}`;
     return pipelineName;
 };
 exports.getPipelineName = getPipelineName;
