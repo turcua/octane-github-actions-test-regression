@@ -94776,6 +94776,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                     if (scmData) {
                         const rootSCMEvent = (0, ciEventsService_1.generateRootCiEvent)(event, pipelineData, "scm" /* CiEventType.SCM */, jobCiIdPrefix, scmData);
                         console.log(`Injecting commits since ${since}...`);
+                        console.log(`Root SCM event: ${JSON.stringify(rootSCMEvent)}`);
                         yield octaneClient_1.default.sendEvents([rootSCMEvent], pipelineData.instanceId, pipelineData.baseUrl);
                     }
                 }
@@ -94786,6 +94787,7 @@ const handleEvent = (event) => __awaiter(void 0, void 0, void 0, function* () {
                 console.log('Waiting for queued events to finish up...');
                 yield (0, ciEventsService_1.pollForJobsOfTypeToFinish)(owner, repoName, currentRun, workflowRunId, startTime, "in_progress" /* ActionsEventType.WORKFLOW_STARTED */);
                 const completedEvent = (0, ciEventsService_1.generateRootCiEvent)(event, pipelineData, "finished" /* CiEventType.FINISHED */, jobCiIdPrefix);
+                console.log(`Completed event: ${completedEvent}`);
                 yield octaneClient_1.default.sendEvents([completedEvent], pipelineData.instanceId, pipelineData.baseUrl);
                 if ((0, config_1.getConfig)().unitTestResultsGlobPattern) {
                     yield (0, testResultsService_1.sendJUnitTestResults)(owner, repoName, workflowRunId, pipelineData.buildCiId, `${jobCiIdPrefix}/${pipelineData.rootJobName}`, pipelineData.instanceId);
