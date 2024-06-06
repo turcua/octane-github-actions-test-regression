@@ -28,7 +28,7 @@ jobs:
           octaneUrl: 'https://oploadbalancer.octane.admlabs.aws.swinfra.net:8444/webcontext'
           #octaneUrl: 'https://falcon-apt-usually.ngrok-free.app/dev'
           octaneSharedSpace: 1001
-          octaneWorkspace: 35003
+          octaneWorkspace: 50001
           octaneClientId: ${{secrets.ALM_OCTANE_CLIENT_ID}}
           octaneClientSecret: ${{secrets.ALM_OCTANE_CLIENT_SECRET}}
           # Automatically provided GitHub token
